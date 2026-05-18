@@ -259,34 +259,51 @@ core3_bootstrap() {
     wget -qO /tmp/firstboot https://raw.githubusercontent.com/Sirata89/SWGEMU-JOYCEE501/main/docker/files/firstboot/functions ||
         error "Failed to download firstboot setup. GET HELP." 103
 
-    msg "Loading firstboot functions..."
+       msg "Loading firstboot functions..."
     source /tmp/firstboot
 
-    # ==================== OVERRIDE core3_clone FOR SIRATA89 ====================
+    # ==================== OVERRIDE core3_clone WITH DEBUG ====================
     core3_clone() {
-        msg "Cloning your JOYCEE501 repo (Sirata89)..."
+        msg "=== DEBUG: Starting core3_clone override ==="
 
         mkdir -vp ${HOME_DIR}/workspace
         cd ${HOME_DIR}/workspace
 
+        echo "Current directory: $(pwd)"
+        echo "REPO_PUBLIC_URL = ${REPO_PUBLIC_URL}"
+        echo "REPO_PUBLIC_BRANCH = ${REPO_PUBLIC_BRANCH}"
+
         if [ -d "Core3" ]; then
             msg "Core3 already exists, pulling latest..."
             cd Core3
-            git pull --ff-only || git pull --rebase
+            echo "Pulling in: $(pwd)"
+            git pull --ff-only || { echo "Pull failed!"; git pull --rebase; }
         else
+            msg "Cloning fresh..."
+            echo "Running: git clone --progress https://github.com/Sirata89/SWGEMU-JOYCEE501.git Core3"
             git clone --progress https://github.com/Sirata89/SWGEMU-JOYCEE501.git Core3
+            if [ $? -ne 0 ]; then
+                error "Git clone command failed!" 999
+            fi
             cd Core3
         fi
 
-        # Same post-clone steps as original
+        echo "After clone, directory: $(pwd)"
+        ls -la
+
+        # Post-clone steps
         echo 'MMOCoreORB/bin/scripts/managers/resource_manager_spawns.lua' >> .git/info/exclude 2>/dev/null || true
         git update-index --assume-unchanged MMOCoreORB/bin/scripts/managers/resource_manager_spawns.lua 2>/dev/null || true
 
         git checkout ${REPO_PUBLIC_BRANCH} 2>/dev/null || true
 
-        msg "✅ Successfully cloned/updated your repo into workspace/Core3"
+        msg "✅ DEBUG: Clone/updated finished"
     }
     # ===========================================================================
+
+    echo "=== DEBUG: Checking if Core3 exists ==="
+    ls -la ${HOME_DIR}/workspace 2>/dev/null || echo "workspace folder missing!"
+    ls -la ${HOME_DIR}/workspace/Core3 2>/dev/null || echo "Core3 folder missing!"
 
     [ -d "${HOME_DIR}/workspace/Core3/.git" ] || error "Core3 clone failed?" 104
 
