@@ -60,7 +60,7 @@ option(ENABLE_TSAN "Enables thread sanitizer compiling" OFF)
 option(ENABLE_UBSAN "Enables undefined behavior sanitizer compiling" OFF)
 option(ENABLE_NATIVE "Enables -march=native compiler option" ON)
 option(ENABLE_OMIT_FRAMEPOINTER "Enables -fno-omit-frame-pointer compiler option" ON)
-option(ENABLE_ERROR_ON_WARNINGS "Enables -Werror compiler option" ON)
+option(ENABLE_ERROR_ON_WARNINGS "Enables -Werror -Wno-deprecated-literal-operator -Wno-nontrivial-memcall compiler option" ON)
 option(ENABLE_REST_SERVER "Enables REST API Server" OFF)
 option(ENABLE_SESSION_API "Enables Session API support" OFF)
 option(ENABLE_ODB "Enables odb3 compiling" OFF)
@@ -272,7 +272,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
     endforeach(flag_comp)
 
     if (ENABLE_ERROR_ON_WARNINGS)
-	   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+	   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-deprecated-literal-operator -Wno-nontrivial-memcall")
     endif(ENABLE_ERROR_ON_WARNINGS)
 
     if (ENABLE_ASAN)
