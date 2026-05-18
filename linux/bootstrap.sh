@@ -262,7 +262,7 @@ core3_bootstrap() {
     msg "Loading firstboot functions..."
     source /tmp/firstboot
 
-    # ==================== OVERRIDE core3_clone FOR SIRATA89 FORK ====================
+    # ==================== OVERRIDE core3_clone FOR SIRATA89 ====================
     core3_clone() {
         msg "Cloning your JOYCEE501 repo (Sirata89)..."
 
