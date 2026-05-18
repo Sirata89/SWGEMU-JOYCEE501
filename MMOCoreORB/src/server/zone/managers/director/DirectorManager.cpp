@@ -1195,6 +1195,34 @@ int DirectorManager::givePlayerResource(lua_State* L) {
 	return 0;
 }
 
+// ==================== BAZAAR BOT TEMPORARILY DISABLED ====================
+// This prevents crashes while we create the "Stan" character
+
+int DirectorManager::bazaarBotCreateLootItem(lua_State* L) {
+    Logger::console.info("BazaarBot disabled: bazaarBotCreateLootItem", true);
+    lua_pushnil(L);
+    return 0;
+}
+
+int DirectorManager::bazaarBotCreateCraftedItemAndList(lua_State* L) {
+    Logger::console.info("BazaarBot disabled: bazaarBotCreateCraftedItemAndList", true);
+    lua_pushnil(L);
+    return 0;
+}
+
+int DirectorManager::bazaarBotCreateCraftedItem(lua_State* L) {
+    Logger::console.info("BazaarBot disabled: bazaarBotCreateCraftedItem", true);
+    lua_pushnil(L);
+    return 0;
+}
+
+int DirectorManager::bazaarBotListItem(lua_State* L) {
+    Logger::console.info("BazaarBot disabled: bazaarBotListItem", true);
+    return 0;
+}
+
+// =====================================================================
+/*
 int DirectorManager::bazaarBotCreateLootItem(lua_State* L) {
 	ManagedReference<CreatureObject*> creature = (CreatureObject*)lua_touserdata(L, -7);
 	String lootItem = lua_tostring(L, -6);
@@ -1568,7 +1596,7 @@ int DirectorManager::bazaarBotListItem(lua_State* L) {
 			
 	return 0;
 }
-
+*/
 int DirectorManager::logToFile(lua_State* L){
 	String message = lua_tostring(L, -2);
 	String pathAndFileName = lua_tostring(L, -1);
