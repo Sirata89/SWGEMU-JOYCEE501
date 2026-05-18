@@ -241,7 +241,7 @@ core3_bootstrap() {
 
     msg "Using ${RUN_USER} in ${HOME_DIR}"
 
-    export REPO_PUBLIC_URL=${REPO_PUBLIC_URL:-'https://github.com/sirata89/SWGEMU-JOYCEE501'}
+    export REPO_PUBLIC_URL=${REPO_PUBLIC_URL:-'https://github.com/Sirata89/SWGEMU-JOYCEE501'}
     export REPO_PUBLIC_BRANCH=${REPO_PUBLIC_BRANCH:-'main'}
 
     echo -e 'Dpkg::Progress-Fancy "1";\nAPT::Color "1";' > /etc/apt/apt.conf.d/99fancy
@@ -254,17 +254,17 @@ core3_bootstrap() {
         chown -R "${RUN_USER}":"${RUN_USER}" "${HOME_DIR}"
     fi
 
-    # === Use your own firstboot + override the clone ===
     msg "Pulling firstboot from your repo..."
-    wget -qO /tmp/firstboot https://raw.githubusercontent.com/sirata89/SWGEMU-JOYCEE501/main/docker/files/firstboot/functions ||
+
+    wget -qO /tmp/firstboot https://raw.githubusercontent.com/Sirata89/SWGEMU-JOYCEE501/main/docker/files/firstboot/functions ||
         error "Failed to download firstboot setup. GET HELP." 103
 
     msg "Loading firstboot functions..."
     source /tmp/firstboot
 
-    # ==================== OVERRIDE core3_clone ====================
+    # ==================== OVERRIDE core3_clone FOR SIRATA89 FORK ====================
     core3_clone() {
-        msg "Cloning your JOYCEE501 repo (no extra /Core3.git)..."
+        msg "Cloning your JOYCEE501 repo (Sirata89)..."
 
         mkdir -vp ${HOME_DIR}/workspace
         cd ${HOME_DIR}/workspace
@@ -274,7 +274,7 @@ core3_bootstrap() {
             cd Core3
             git pull --ff-only || git pull --rebase
         else
-            git clone --progress https://github.com/MarcJoyce/SWGEMU-JOYCEE501.git Core3
+            git clone --progress https://github.com/Sirata89/SWGEMU-JOYCEE501.git Core3
             cd Core3
         fi
 
@@ -284,9 +284,9 @@ core3_bootstrap() {
 
         git checkout ${REPO_PUBLIC_BRANCH} 2>/dev/null || true
 
-        msg "✅ Successfully cloned your repo into workspace/Core3"
+        msg "✅ Successfully cloned/updated your repo into workspace/Core3"
     }
-    # ============================================================
+    # ===========================================================================
 
     [ -d "${HOME_DIR}/workspace/Core3/.git" ] || error "Core3 clone failed?" 104
 
