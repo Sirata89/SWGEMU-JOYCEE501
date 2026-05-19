@@ -5,17 +5,26 @@ DedleeSynScreenPlay = ScreenPlay:new {
   numberOfActs = 1,
   AdminPlayerID = 281474993547517, -- PlayerID of Admin character
   screenplayName = "DedleeSynScreenPlay",
-  respawnFrequency = 1000 * 86400,
-  spawns = {
-    { "tusken_witch_doctor", "Tusken Witch Doctor" },
+  -- respawnFrequency = 1000 * 86400, -- 1 Day
+  respawnFrequency = 1000 * 86400 / 24 * 3, -- 3 hours
+  regularSpawns = {
+    { "krayt_dragon_adolescent", "Adolescent Krayt Dragon" },
+    { "krayt_dragon_ancient", "Ancient Krayt Dragon" },
+    { "krayt_dragon_elder", "Elder Krayt Dragon" },
+    { "death_watch_overlord", "Death Watch Overlord" },
+    { "krayt_dragon_grand", "Grand Krayt Dragon" },
+    { "axkva_min", "The Nightsister Queen, Axkva Min" },
+    { "gorax", "Gorax" },
+    { "giant_canyon_krayt_dragon", "Giant Canyon Krayt Dragon" },
+    { "canyon_krayt_dragon", "Canyon Krayt Dragon" },
+    { "spiderclan_elder", "Spider Clan Nightsister Elder" },
+    { "nightsister_elder", "Nightsister Elder" },
+    { "dark_jedi_master", "Dark Jedi Master" },
+    { "singing_mountain_clan_councilwoman", "Singing Mountain Clan Councilwoman" },
+    { "dark_jedi_knight", "Dark Jedi Knight" },
     { "tusken_executioner", "Tusken Executioner" },
     { "tusken_observer", "Tusken Observer" },
-    { "dark_jedi_knight", "Dark Jedi Knight" },
-    { "dark_jedi_master", "Dark Jedi Master" },
-    { "spiderclan_elder", "SpiderClan Nightsister Elder" },
-    { "nightsister_elder", "Nightsister Elder" },
-    { "singing_mountain_clan_councilwoman", "Singing Mountain Clan Councilwoman" },
-    { "krayt_dragon_ancient", "Ancient Krayt Dragon" },
+    { "tusken_witch_doctor", "Tusken Witch Doctor" },
     { "graul_marauder", "Graul Marauder" },
   },
   messages = {
@@ -72,7 +81,11 @@ function DedleeSynScreenPlay:setHuntMob()
     return 0
   end
 
-  local target = self.spawns[getRandomNumber(1, #self.spawns)]
+  deleteScreenPlayData(pAdminPlayer, "DedleeSynScreenPlay", "huntTargetTemplate")
+  deleteScreenPlayData(pAdminPlayer, "DedleeSynScreenPlay", "huntTargetMessage")
+
+
+  local target = self.regularSpawns[getRandomNumber(1, #self.regularSpawns)]
   local targetTemplate = target[1]
   local targetMessage = target[2]
   self:log("DedleeSyn: New target selected. Template: " .. targetTemplate .. ", Message: " .. targetMessage)
@@ -106,12 +119,14 @@ function DedleeSynScreenPlay:notifyKilledCreature(pPlayer, pVictim)
   end
 
   if (victimName == huntTarget or victimCustomName == huntTarget) then
-    local message = self.messages[getRandomNumber(1, #self.messages)]
-    CreatureObject(pPlayer):sendSystemMessage(" \\#FFFF00\\<Communicator>\\#FFFFFF\\" .. message)
-
-    local tokens = 1;
-
-    writeScreenPlayData(pPlayer, "DedleeSynScreenPlay", "huntCount", huntCount + tokens)
+    if (CreatureObject(pPlayer):isInRangeWithObject(pVictim, 80)) then
+      local message = self.messages[getRandomNumber(1, #self.messages)]
+      CreatureObject(pPlayer):sendSystemMessage(" \\#FFFF00\\<Communicator>\\#FFFFFF\\" .. message)
+      
+      local tokens = 1;
+      
+      writeScreenPlayData(pPlayer, "DedleeSynScreenPlay", "huntCount", huntCount + tokens)
+    end
   end
 
 	return 0

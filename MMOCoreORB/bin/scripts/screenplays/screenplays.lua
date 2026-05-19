@@ -54,6 +54,9 @@ includeFile("themepark/smc/themeParkSmcZideera.lua")
 includeFile("themepark/smc/themeParkSmcVhaundaIzaryx.lua")
 includeFile("themepark/smc/themeParkSmcVurleneAujante.lua")
 
+includeFile("themepark/custom/jedi/light/themeParkLightJedi.lua")
+includeFile("themepark/custom/jedi/dark/themeParkDarkJedi.lua")
+
 -- Screenplay utilities
 includeFile("utils/quest_spawner.lua")
 
@@ -739,6 +742,8 @@ includeFile("custom/conversations/navi_gator_convo_handler.lua")
 includeFile("custom/conversations/bazaar_bot_helper_convo_handler.lua")
 includeFile("custom/conversations/dedlee_syn_convo_handler.lua")
 includeFile("custom/conversations/stan_convo_handler.lua")
+includeFile("custom/conversations/treasure_stan_convo_handler.lua")
+includeFile("custom/conversations/kreezo_convo_handler.lua")
 includeFile("custom/conversations/battle_coordinator_convo_handler.lua")
 includeFile("custom/conversations/arena_inviter_convo_handler.lua")
 includeFile("custom/conversations/reward_first_convo_handler.lua")
@@ -765,6 +770,10 @@ includeFile("custom/jedi/conversations/lazarus_convo_handler.lua")
 includeFile("custom/jedi/conversations/hermit_convo_handler.lua")
 
 includeFile("custom/jedi/conversations/herald_convo_handler.lua")
+
+includeFile("custom/jedi/conversations/light_jedi_padawan_convo_handler.lua")
+includeFile("custom/jedi/conversations/dark_jedi_padawan_convo_handler.lua")
+includeFile("custom/jedi/conversations/jedi_shop_keeper_convo_handler.lua")
 
 includeFile("custom/bountyhunter/conversations/shae_torrvek_convo_handler.lua")
 
@@ -812,3 +821,5 @@ includeFile("custom/arena/reward/second/rewardSecond.lua")
 includeFile("custom/arena/reward/second/rewardSecondEncounter.lua")
 includeFile("custom/arena/reward/third/rewardThird.lua")
 includeFile("custom/arena/reward/third/rewardThirdEncounter.lua")
+
+includeFile("custom/treasure.lua")

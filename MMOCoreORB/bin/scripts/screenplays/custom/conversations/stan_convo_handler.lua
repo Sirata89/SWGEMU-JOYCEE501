@@ -10,6 +10,10 @@ function stanConvoHandler:getInitialScreen(pPlayer, pNpc, pConvTemplate)
 	local accountID = 0
 	local pAdminPlayer = getCreatureObject(281474993547517)
 
+	if (VillageJediManagerCommon.hasJediProgressionScreenPlayState(pPlayer, VILLAGE_JEDI_PROGRESSION_GLOWING) and not VillageJediManagerCommon.hasUnlockedBranch(pPlayer, "force_sensitive_heightened_senses_persuasion")) then
+		VillageJediManagerCommon.unlockBranch(pPlayer, "force_sensitive_heightened_senses_persuasion")
+	end
+
   return convoTemplate:getScreen("hello")
 end
 
@@ -39,7 +43,7 @@ function stanConvoHandler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, select
 		if (CreatureObject(pPlayer):hasScreenPlayState(1, "glowy_trial_1") and not CreatureObject(pPlayer):hasScreenPlayState(2, "glowy_trial_1")) then
 			clonedConversation:addOption("I'm looking for something  related to the ancient force mystics, have you heard anything about that?", "glowy_trial_1_rumour")
 		end
-		if (randomNumber > 50 and cooldown <= os.time()) then
+		if (randomNumber > 15 and cooldown <= os.time()) then
 			clonedConversation:addOption("Have you heard anything about a Meatlump King?", "meatlump_king_location")
 		else 
 			writeScreenPlayData(pPlayer, "StanMeatlump", "cooldown", os.time() + (30 * 60))

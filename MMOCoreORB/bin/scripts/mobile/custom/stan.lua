@@ -1,6 +1,6 @@
 stan = Creature:new {
 	objectName = "",
-    customName = "Stan-ish",
+  customName = "Stan-ish",
 	socialGroup = "townsperson",
 	faction = "townsperson",
 	mobType = MOB_NPC,
@@ -8,7 +8,7 @@ stan = Creature:new {
 	chanceHit = 0.24,
 	damageMin = 40,
 	damageMax = 45,
-	baseXp = 62,
+	-- baseXp = 62,
 	baseHAM = 113,
 	baseHAMmax = 138,
 	armor = 3,
@@ -26,9 +26,9 @@ stan = Creature:new {
 	creatureBitmask = HERD,
 	optionsBitmask = INVULNERABLE + CONVERSABLE,
 	diet = HERBIVORE,
-	scale = 1,
+	scale = 0.8,
 
-    templates = {"object/mobile/dressed_commoner_naboo_moncal_male_01.iff"},
+	templates = {"object/mobile/dressed_commoner_naboo_moncal_male_01.iff"},
 	lootGroups = {},
 
 	-- Primary and secondary weapon should be different types (rifle/carbine, carbine/pistol, rifle/unarmed, etc)
