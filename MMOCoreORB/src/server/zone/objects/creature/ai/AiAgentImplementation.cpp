@@ -295,29 +295,22 @@ void AiAgentImplementation::loadTemplateData(CreatureTemplate* templateData) {
 
 		int templSpecies = getSpecies();
 
-		String newName = nm->makeCreatureName(npcTemplate->getRandomNameType(), templSpecies);
-
 		if (!npcTemplate->getRandomNameTag()) {
-			newName += " CL: " + String::valueOf(level);
-			setCustomObjectName(newName, false);
+			setCustomObjectName(nm->makeCreatureName(npcTemplate->getRandomNameType(), templSpecies), false);
 		} else {
+			String newName = nm->makeCreatureName(npcTemplate->getRandomNameType(), templSpecies);
 			newName += " (";
-			
-			if (objectName == "") {
+
+			if (objectName == "")
 				newName += templateData->getCustomName();
-			} else {
+			else
 				newName += StringIdManager::instance()->getStringId(objectName.getFullPath().hashCode()).toString();
-			}
 
 			newName += ")";
-			newName += " CL: " + String::valueOf(level);
 			setCustomObjectName(newName, false);
 		}
 	} else {
-		String customName = templateData->getCustomName();
-
-		customName += " CL: " + String::valueOf(level);
-		setCustomObjectName(customName, false);
+		setCustomObjectName(templateData->getCustomName(), false);
 	}
 
 	setHeight(templateData->getScale(), false);
@@ -488,6 +481,8 @@ void AiAgentImplementation::fillAttributeList(AttributeListMessage* alm, Creatur
 	if (isDead()) {
 		return;
 	}
+
+	alm->insertAttribute("challenge_level", String::valueOf(getTemplateLevel()));
 
 	if (getArmor() == 0)
 		alm->insertAttribute("armorrating", "None");
@@ -2134,7 +2129,7 @@ void AiAgentImplementation::healCreatureTarget(CreatureObject* healTarget) {
 	int actionDam = actionMax - healTarget->getHAM(CreatureAttribute::ACTION);
 	int mindDam = mindMax - healTarget->getHAM(CreatureAttribute::MIND);
 
-	int healAmount = getLevel() * 20;
+	int healAmount = getLevel() * 60;
 
 	if (healAmount > healthDam) {
 		healTarget->healDamage(asAiAgent(), CreatureAttribute::HEALTH, healthMax, true, false);
@@ -4147,8 +4142,8 @@ bool AiAgentImplementation::isAggressive(TangibleObject* target) {
 	if (targetIsAgent && targetCreo->isPet() && !targetCreo->asAiAgent()->isMindTricked()) {
 		ManagedReference<PetControlDevice*> pcd = targetCreo->getControlDevice().get().castTo<PetControlDevice*>();
 
-		if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && isNeutral())
-			return false;
+		// if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && isNeutral())
+		// 	return false;
 
 		ManagedReference<CreatureObject*> owner = targetCreo->getLinkedCreature().get();
 
@@ -4161,9 +4156,9 @@ bool AiAgentImplementation::isAggressive(TangibleObject* target) {
 	if (isPet() && !isMindTricked()) {
 		ManagedReference<PetControlDevice*> pcd = getControlDevice().get().castTo<PetControlDevice*>();
 
-		if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && targetCreo->isNeutral()) {
-			return false;
-		}
+		// if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && targetCreo->isNeutral()) {
+		// 	return false;
+		// }
 
 		ManagedReference<CreatureObject*> owner = getLinkedCreature().get();
 
@@ -4291,8 +4286,8 @@ bool AiAgentImplementation::isAttackableBy(TangibleObject* object) {
 	if (isPet() && !isMindTricked()) {
 		ManagedReference<PetControlDevice*> pcd = getControlDevice().get().castTo<PetControlDevice*>();
 
-		if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && object->isNeutral())
-			return false;
+		// if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && object->isNeutral())
+		// 	return false;
 
 		ManagedReference<CreatureObject*> owner = getLinkedCreature().get();
 
@@ -4346,9 +4341,9 @@ bool AiAgentImplementation::isAttackableBy(CreatureObject* creature) {
 	// Handle Pets - Check against owner
 	if (isPet() && !isMindTricked()) {
 		ManagedReference<PetControlDevice*> pcd = getControlDevice().get().castTo<PetControlDevice*>();
-		if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && creature->isNeutral()) {
-			return false;
-		}
+		// if (pcd != nullptr && pcd->getPetType() == PetManager::FACTIONPET && creature->isNeutral()) {
+		// 	return false;
+		// }
 
 		ManagedReference<CreatureObject*> owner = getLinkedCreature().get();
 
@@ -4365,8 +4360,8 @@ bool AiAgentImplementation::isAttackableBy(CreatureObject* creature) {
 	if (creature->isPet()) {
 		ManagedReference<PetControlDevice*> controlDevice = creature->getControlDevice().get().castTo<PetControlDevice*>();
 
-		if (controlDevice != nullptr && controlDevice->getPetType() == PetManager::FACTIONPET && isNeutral())
-			return false;
+		// if (controlDevice != nullptr && controlDevice->getPetType() == PetManager::FACTIONPET && isNeutral())
+		// 	return false;
 
 		ManagedReference<CreatureObject*> owner = creature->getLinkedCreature().get();
 

@@ -3,10 +3,10 @@ Arena = ScreenPlay:new
 	numberOfActs = 1,
   AdminPlayerID = 281474993547517,
 	screenplayName = "Arena",
-  playerCooldown = 72 * 60 * 60, -- 72 hours
+  playerCooldown = 4 * 60 * 60, -- 4 hours
   -- playerCooldown = 10 * 60, -- 10 minutes
-  waveTimer = 45000, -- 45 seconds
-  minWaveTimer = 15000, -- 15 seconds
+  waveTimer = 45000, -- 30 seconds
+  minWaveTimer = 10000, -- 10 seconds
   leaderboardCooldown = 7 * 24 * 60 * 60, -- 7 days
   -- leaderboardCooldown = 30 * 60, -- 30 minutes
   eventName = "ArenaLeaderboard",
@@ -85,6 +85,29 @@ function Arena:start()
 
     local buffTerminal
 	end
+end
+
+function Arena:onPlayerLoggedIn(pPlayer)
+  dropObserver(OBJECTDESTRUCTION, "Arena", "notifyPlayerKilled", pPlayer)
+  local zoneName = CreatureObject(pPlayer):getZoneName()
+
+  if (zoneName == nil or not zoneName == "lok") then
+    return 0
+  end
+
+	local x = CreatureObject(pPlayer):getPositionX()
+	local y = CreatureObject(pPlayer):getPositionY()
+
+  if (x == nil or y == nil) then
+    return 0;
+  end
+
+  if (x >= -3032 and x <= -2968 and y >= 468 and y <= 532) then
+    SceneObject(pPlayer):switchZone("lok", -3042, 66, 502, 0)
+    CreatureObject(pPlayer):revivePatient()
+
+  end
+  
 end
 
 function Arena:validateEvent()
@@ -236,7 +259,7 @@ function Arena:beginArena(pPlayer)
 
   writeScreenPlayData(pPlayer, "NonEncounterEvent", "inEvent", 1)
 
-  CreatureObject(pPlayer):sendSystemMessage(" \\#FF0000\\ The Arena will begin in 30s")
+  CreatureObject(pPlayer):sendSystemMessage(" \\#FF0000\\ The Arena will begin in 45s")
 
   -- Start spawning creatures
   createEvent(30000, "Arena", "spawnArenaMobs", pPlayer, "")
@@ -271,7 +294,7 @@ function Arena:stopArena(pPlayer)
   deleteScreenPlayData(pPlayer, "Arena", ":arenaWaveCount")
   writeScreenPlayData(pAdminPlayer, "Arena", "occupied", 0)
 
-  writeScreenPlayData(pPlayer, "NonEncounterEvent", "inEvent", 0)
+  deleteScreenPlayData(pPlayer, "NonEncounterEvent", "inEvent")
 
   createEvent(2500, "Arena", "resetPlayer", pPlayer, "")
   return 0
@@ -281,7 +304,6 @@ function Arena:resetPlayer(pPlayer)
   SceneObject(pPlayer):switchZone("lok", -3042, 66, 502, 0)
   CreatureObject(pPlayer):revivePatient()
   writeScreenPlayData(pPlayer, "Arena", ":arenaCooldown", os.time() + self.playerCooldown)
-
 end
 
 function Arena:notifyPlayerKilled(pPlayer, pVictim, nothing)

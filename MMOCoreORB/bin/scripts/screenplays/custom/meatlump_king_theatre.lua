@@ -38,7 +38,11 @@ MeatlumpKingTheatre = GoToTheater:new {
 	},
   waypointDescription = "Meatlump King camp",
 	mobileList = {
-		{ template = "meatlump_king", minimumDistance = 3, maximumDistance = 6, referencePoint = 0 }
+		{ template = "meatlump_king", minimumDistance = 3, maximumDistance = 6, referencePoint = 0 },
+    { template = "meatlump_spike", minimumDistance = 3, maximumDistance = 6, referencePoint = 1 },
+    { template = "meatlump_killer", minimumDistance = 3, maximumDistance = 6, referencePoint = 2 },
+    { template = "meatlump_luci", minimumDistance = 3, maximumDistance = 6, referencePoint = 3 },
+    { template = "meatlump_lillith", minimumDistance = 3, maximumDistance = 6, referencePoint = 4 },
 	},
 	activeAreaRadius = 64,
 	flattenLayer = true
@@ -86,6 +90,10 @@ function MeatlumpKingTheatre:notifyOnKingKilled(pMobile)
       CreatureObject(pPlayer):sendSystemMessage("You have received a loot item!")
     end
   end
+
+  rescheduleServerEvent("meatlump_theatre_finish", getRandomNumber(1800, 5400) * 1000)
+
+  return 0
 end
 
 function MeatlumpKingTheatre:damageTaken(pNpc, damageThreshold)
@@ -105,10 +113,14 @@ end
 function MeatlumpKingTheatre:getHelp(pNpc, num, template, pAttacker)
 
   local numberOfPlayers = self:getPlayersInRange(pNpc)
-  local numToSpawn = num * numberOfPlayers
+  local numToSpawn = math.max(num * numberOfPlayers, num * 5)
+
+  if (template == "meatlump_king_atst") then
+    numToSpawn = 4
+  end
 
   for i = 1, numToSpawn do
-          local zoneName = CreatureObject(pNpc):getZoneName()
+      local zoneName = CreatureObject(pNpc):getZoneName()
       local xLoc = SceneObject(pNpc):getWorldPositionX() + (-20 + getRandomNumber(30))
       local yLoc = SceneObject(pNpc):getWorldPositionY() + (-20 + getRandomNumber(30))
       local zLoc = getTerrainHeight(pNpc, xLoc, yLoc)
@@ -230,6 +242,28 @@ function MeatlumpKingTheatre:onMeatlumpKingDamage10(pMeatlumpKing, pAttacker, da
     self:getHelp(pMeatlumpKing, 1, "meatlump_king_cretin", pAttacker)
     spatialChat(pMeatlumpKing, "Running away eh? Come back here and take what's coming to you! I'll bite your legs off!")
     self:finalHeal(pMeatlumpKing)
+
+    createObserver(DAMAGERECEIVED, self.taskName, "onMeatlumpKingDamage10Final", pMeatlumpKing)
+    return 1
+  else
+    return 0
+  end
+end
+
+function MeatlumpKingTheatre:onMeatlumpKingDamage10Final(pMeatlumpKing, pAttacker, damage)
+  if pMeatlumpKing == nil then
+		return 1
+	end
+
+  if (self:damageTaken(pMeatlumpKing, 10)) then
+
+    dropObserver(DAMAGERECEIVED, self.taskName, "onMeatlumpKingDamage10Final", pMeatlumpKing)
+
+    self:getHelp(pMeatlumpKing, 1, "meatlump_king_cretin", pAttacker)
+    self:getHelp(pMeatlumpKing, 1, "meatlump_king_oaf", pAttacker)
+    self:getHelp(pMeatlumpKing, 1, "meatlump_king_clod", pAttacker)
+    self:getHelp(pMeatlumpKing, 1, "meatlump_king_atst", pAttacker)
+    spatialChat(pMeatlumpKing, "Oooh you bastard! Right, let's be havin' ya!")
     return 1
   else
     return 0
@@ -245,7 +279,7 @@ function MeatlumpKingTheatre:finalHeal(pObj)
 
 	if (SceneObject(pObj):isCreatureObject()) then
 		for i = 0, 6, 3 do
-			local toHeal = CreatureObject(pObj):getMaxHAM(i) * 0.5;
+			local toHeal = CreatureObject(pObj):getMaxHAM(i) * ((getRandomNumber(50) + 50) / 100);
       local currentHAM = CreatureObject(pObj):getHAM(i);
 			CreatureObject(pObj):setHAM(i, math.min(CreatureObject(pObj):getMaxHAM(i), currentHAM + toHeal));
 		end
@@ -269,7 +303,8 @@ function MeatlumpKingTheatre:healTenPercent(pObj)
 	end
 end
 
-function MeatlumpKingTheatre:finishUpTask(pPlayer)
+function MeatlumpKingTheatre:finishUpTask()
+  local pPlayer = getCreatureObject(281474993547517)
   self:finish(pPlayer)
   createEvent(10000, "MeatlumpKingScreenPlay", "respawn", pPlayer, "")
 end

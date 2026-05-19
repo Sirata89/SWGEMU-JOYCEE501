@@ -40,35 +40,24 @@ function bazaarBotHelperConvoHandler:runScreenHandlers(pConvTemplate, pPlayer, p
   if (screenID == "todo_clear_inv") then
     rescheduleServerEvent("BazaarBotCleanInventory", 1 * 1000)
   elseif (screenID == "spawn_barbed") then
-    
-  elseif (screenID == "todo_relist") then
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2974, 66, 468, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2958, 66, 468, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2942, 66, 468, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2926, 66, 468, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2918, 66, 476, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2918, 66, 492, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2918, 66, 508, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2918, 66, 524, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2982, 66, 524, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2982, 66, 508, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2982, 66, 492, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2982, 66, 476, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2926, 66, 532, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2942, 66, 532, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2958, 66, 532, 0, 0);
-    spawnSceneObject("lok", "object/installation/battlefield/destructible/bfield_wall_barbed.iff", -2974, 66, 532, 0, 0);
+    local pInventory = SceneObject(pPlayer):getSlottedObject("inventory")
+    local pBuffItem = giveItem(pInventory, "object/tangible/item/quest/force_sensitive/fs_buff_item.iff", -1, true)
 
-    -- rescheduleServerEvent("BazaarBotAddArmor", 1 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddClothing", 2 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddFood", 3 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddFurniture", 4 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddArtisanItems", 5 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddLoot", 6 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddMedicine", 7 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddStructures", 8 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddVehicles", 9 * 60 * 1000)
-    -- rescheduleServerEvent("BazaarBotAddWeapons", 10 * 60 * 1000)
+		if (pBuffItem == nil) then
+			CreatureObject(pPlayer):sendSystemMessage("Error: Unable to generate item.")
+		else
+			local buffItem = LuaFsBuffItem(pBuffItem)
+			-- buffItem:setBuffAttribute(6) -- Mind
+			buffItem:setBuffAttribute(0) --  Health
+			-- buffItem:setReuseTime(345600000) -- 4 days in milliseconds
+			buffItem:setReuseTime(600000) -- 10 minutes in milliseconds
+			-- buffItem:setBuffValue(900)
+			buffItem:setBuffValue(1800)
+			-- buffItem:setBuffDuration(5400) -- 1.5 hours in seconds
+			buffItem:setBuffDuration(10800) -- 3 hours in seconds
+		end
+  elseif (screenID == "todo_relist") then
+    BazaarBotScreenPlay:validateEvent("BazaarBotAddFood", "addMoreFood", 1)
   elseif (screenID == "add_wps") then
     local pGhost = CreatureObject(pPlayer):getPlayerObject()
     local playerID = SceneObject(pPlayer):getObjectID()
