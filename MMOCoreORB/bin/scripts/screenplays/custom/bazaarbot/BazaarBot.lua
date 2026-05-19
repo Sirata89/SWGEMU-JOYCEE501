@@ -14,7 +14,7 @@ includeFile("custom/bazaarbot/table_additive.lua")
 
 BazaarBotScreenPlay = ScreenPlay:new {
 	numberOfActs = 1,
-	AdminPlayerID = 281474993547517,
+	AdminPlayerID = 281474993704840,
 	terminalIDs = {4685572},
 	itemDescription = "This item has been produced by the BazaarBot.",
 }
