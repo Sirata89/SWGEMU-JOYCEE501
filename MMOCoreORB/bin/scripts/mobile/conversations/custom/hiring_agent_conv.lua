@@ -5,8 +5,6 @@ hiringAgentConvoTemplate = ConvoTemplate:new {
     screens = {}
 }
 
--- ====================== SCREENS ======================
-
 local startScreen = ConvoScreen:new {
     id = "start",
     leftDialog = "Looking for reliable muscle today, stranger?",
@@ -25,7 +23,7 @@ hiringAgentConvoTemplate:addScreen(hireMenuScreen)
 
 local aboutScreen = ConvoScreen:new {
     id = "about",
-    leftDialog = "I recruit skilled mercenaries for adventurers like yourself. My rates are fair and they fight well.",
+    leftDialog = "I recruit skilled mercenaries for adventurers like yourself. My rates are fair.",
     stopConversation = "false",
     options = {}
 }
@@ -38,13 +36,5 @@ local byeScreen = ConvoScreen:new {
     options = {}
 }
 hiringAgentConvoTemplate:addScreen(byeScreen)
-
-local successScreen = ConvoScreen:new {
-    id = "success",
-    leftDialog = "They're on their way. Good hunting!",
-    stopConversation = "false",
-    options = {}
-}
-hiringAgentConvoTemplate:addScreen(successScreen)
 
 addConversationTemplate("hiring_agent_convo_template", hiringAgentConvoTemplate)

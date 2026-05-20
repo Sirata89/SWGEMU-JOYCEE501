@@ -1,7 +1,7 @@
 local ObjectManager = require("managers.object.object_manager")
-local Logger = require("utils.logger")
+-- local Logger = require("utils.logger")   -- remove if not used
 
-HiringAgentScreenPlay = ScreenPlay:new {}
+HiringAgentScreenPlay = ScreenPlay:new {}     -- Global, no "local"
 
 registerScreenPlay("HiringAgentScreenPlay", true)
 

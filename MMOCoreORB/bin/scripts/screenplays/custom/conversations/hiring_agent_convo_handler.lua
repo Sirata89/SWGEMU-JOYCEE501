@@ -1,5 +1,3 @@
-local HiringAgentScreenPlay = require("screenplays.custom.hiring_agent")
-
 HiringAgentConvoHandler = conv_handler:new {}
 
 function HiringAgentConvoHandler:getInitialScreen(pPlayer, pNpc, pConvTemplate)
