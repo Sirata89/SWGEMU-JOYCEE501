@@ -823,3 +823,6 @@ includeFile("custom/arena/reward/third/rewardThird.lua")
 includeFile("custom/arena/reward/third/rewardThirdEncounter.lua")
 
 includeFile("custom/treasure.lua")
+
+includeFile("custom/hiring_agent.lua")
+includeFile("custom/conversations/hiring_agent_convo_handler.lua")

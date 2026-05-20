@@ -169,5 +169,8 @@ includeFile("custom/mobs/arena_gladiator_basic.lua")
 includeFile("custom/mobs/arena_gladiator_elite.lua")
 includeFile("custom/mobs/arena_gladiator_master.lua")
 
+includeFile("custom/hiring_agent.lua")
+includeFile("custom/mercs/generic_merc.lua")
+
 -- Custom content - Loads last to allow for overrides
 includeFile("../custom_scripts/mobile/serverobjects.lua")
