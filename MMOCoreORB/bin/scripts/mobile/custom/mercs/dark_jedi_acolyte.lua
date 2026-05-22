@@ -1,7 +1,7 @@
 dark_jedi_acolyte = Creature:new {
     objectName = "@mob/creature_names:dark_jedi_knight",
     customName = "Dark Jedi Acolyte",
-    socialGroup = "dark_jedi",
+    socialGroup = "mercenary",
     faction = "neutral",
     level = 55,
     chanceHit = 0.62,
@@ -27,7 +27,8 @@ dark_jedi_acolyte = Creature:new {
     primaryWeapon = "lightsaber_weapons",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(lightsabermaster,forcepowermaster)
+    primaryAttacks = merge(lightsabermaster,forcepowermaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(dark_jedi_acolyte, "dark_jedi_acolyte")

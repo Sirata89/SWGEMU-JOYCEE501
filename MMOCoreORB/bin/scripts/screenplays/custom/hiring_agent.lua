@@ -82,7 +82,7 @@ HiringAgentScreenPlay.mercenaryTypes = {
     {
         id = "pirate",
         name = "Pirate Cutthroat",
-        template = "merc_pirate_cutthroat",
+        template = "merc_pirate_hunter",
         cost = 6000,
         displayName = "Pirate Cutthroat",
         jediOnly = false

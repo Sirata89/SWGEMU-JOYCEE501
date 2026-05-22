@@ -143,6 +143,8 @@ namespace server {
 		static int getHashCode(lua_State* L);
 		static int spatialChat(lua_State* L);
 		static int spatialMoodChat(lua_State* L);
+		static int applySlice(lua_State* L);
+		static int applyDot(lua_State* L);
 		static int readSharedMemory(lua_State* L);
 		static int writeSharedMemory(lua_State* L);
 		static int deleteSharedMemory(lua_State* L);

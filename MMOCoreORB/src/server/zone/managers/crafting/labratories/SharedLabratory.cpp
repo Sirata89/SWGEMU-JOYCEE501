@@ -7,6 +7,7 @@
 #include "server/zone/objects/tangible/misc/CustomIngredient.h"
 #include "server/zone/objects/manufactureschematic/ingredientslots/ComponentSlot.h"
 #include "server/zone/objects/manufactureschematic/ingredientslots/ResourceSlot.h"
+#include "templates/crafting/draftslot/DraftSlot.h"
 
 SharedLabratory::SharedLabratory() : Logger("SharedLabratory"){
 }
@@ -210,5 +211,40 @@ int SharedLabratory::calculateAssemblySuccess(CreatureObject* player,DraftSchema
 		return CraftingManager::OK;
 	
 	return CraftingManager::OK;
+}
+
+int SharedLabratory::getJunkValue(ManufactureSchematic* manufactureSchematic) {
+	if (manufactureSchematic == nullptr || manufactureSchematic->getDraftSchematic() == nullptr)
+		return 0;
+	
+	int totalValue = 50; // Base value
+	int totalQuantity = 0;
+	
+	// Sum up total resource quantity from all slots
+	for (int i = 0; i < manufactureSchematic->getSlotCount(); ++i) {
+		Reference<IngredientSlot*> ingredientslot = manufactureSchematic->getSlot(i);
+		Reference<DraftSlot*> draftslot = manufactureSchematic->getDraftSchematic()->getDraftSlot(i);
+		
+		if (ingredientslot == nullptr || draftslot == nullptr)
+			continue;
+		
+		int quantity = draftslot->getQuantity();
+		totalQuantity += quantity;
+	}
+	
+	// Add value based on total resource quantity (20 credits per unit)
+	totalValue += totalQuantity * 20;
+	
+	// Add small complexity bonus
+	int complexity = manufactureSchematic->getDraftSchematic()->getComplexity();
+	if (complexity > 0) {
+		totalValue += complexity * 50; // 50 credits per complexity level
+	}
+	
+	// Cap maximum value at 30000
+	if (totalValue > 30000)
+		totalValue = 30000;
+	
+	return totalValue;
 }
 

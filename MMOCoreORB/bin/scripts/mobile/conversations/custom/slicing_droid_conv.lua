@@ -13,7 +13,7 @@ local greetingScreen = ConvoScreen:new {
     options = {
         { "I want to slice a weapon", "weapon_menu" },
         { "I want to slice armor", "armor_menu" },
-        { "Special: Add DOT to weapon (FREE for testing)", "special_menu" },
+        { "Special: Add DOT to weapon", "special_menu" },
         { "Tell me about your pricing", "pricing_info" },
         { "No thanks", "goodbye" }
     }

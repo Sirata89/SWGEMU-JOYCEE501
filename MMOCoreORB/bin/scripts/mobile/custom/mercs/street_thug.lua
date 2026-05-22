@@ -1,7 +1,7 @@
 street_thug = Creature:new {
     objectName = "@mob/creature_names:thug",
     customName = "Street Thug",
-    socialGroup = "thug",
+    socialGroup = "mercenary",
     faction = "neutral",
     level = 15,
     chanceHit = 0.30,
@@ -28,7 +28,8 @@ street_thug = Creature:new {
     primaryWeapon = "melee_weapons",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlernovice)
+    primaryAttacks = merge(brawlermid,marksmanmid),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(street_thug, "street_thug")

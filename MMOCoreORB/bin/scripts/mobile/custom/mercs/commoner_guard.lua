@@ -1,7 +1,7 @@
 commoner_guard = Creature:new {
     objectName = "@mob/creature_names:commoner",
     customName = "Commoner Guard",
-    socialGroup = "townsperson",
+    socialGroup = "mercenary",
     faction = "neutral",
     level = 18,
     chanceHit = 0.35,
@@ -28,7 +28,8 @@ commoner_guard = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(marksmannovice)
+    primaryAttacks = merge(brawlermid,marksmanmid),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(commoner_guard, "commoner_guard")

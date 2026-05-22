@@ -27,7 +27,8 @@ rodian_mercenary = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(marksmannovice,brawlernovice)
+    primaryAttacks = merge(brawlermaster,marksmanmaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(rodian_mercenary, "rodian_mercenary")

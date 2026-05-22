@@ -449,6 +449,8 @@ void DirectorManager::initializeLuaEngine(Lua* luaEngine) {
 	luaEngine->registerFunction("spawnShipAgent", spawnShipAgent);
 	luaEngine->registerFunction("spatialChat", spatialChat);
 	luaEngine->registerFunction("spatialMoodChat", spatialMoodChat);
+	luaEngine->registerFunction("applySlice", applySlice);
+	luaEngine->registerFunction("applyDot", applyDot);
 	luaEngine->registerFunction("getRandomNumber", getRandomNumber);
 	luaEngine->registerFunction("getHashCode", getHashCode);
 	luaEngine->registerFunction("forcePeace", forcePeace);
@@ -2613,6 +2615,140 @@ int DirectorManager::spatialMoodChat(lua_State* L) {
 	}
 
 	return 0;
+}
+
+int DirectorManager::applySlice(lua_State* L) {
+	if (checkArgumentCount(L, 2) == 1) {
+		String err = "incorrect number of arguments passed to DirectorManager::applySlice";
+		printTraceError(L, err);
+		ERROR_CODE = INCORRECT_ARGUMENTS;
+		return 0;
+	}
+
+	SceneObject* scene = (SceneObject*)lua_touserdata(L, -2);
+	String sliceType = lua_tostring(L, -1);
+
+	if (scene == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	TangibleObject* tano = dynamic_cast<TangibleObject*>(scene);
+	if (tano == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	Locker locker(tano);
+
+	// Generate random slice percentage between 20-35%
+	float slicePercent = (float)(System::random(15) + 20) / 100.0f;
+
+	bool success = false;
+
+	if (sliceType == "speed") {
+		WeaponObject* weapon = dynamic_cast<WeaponObject*>(tano);
+		if (weapon != nullptr) {
+			weapon->setSpeedSlice(slicePercent);
+			weapon->setSliced(true);
+			success = true;
+		}
+	} else if (sliceType == "damage") {
+		WeaponObject* weapon = dynamic_cast<WeaponObject*>(tano);
+		if (weapon != nullptr) {
+			// Remove powerup if present
+			if (weapon->hasPowerup()) {
+				ManagedReference<PowerupObject*> powerup = weapon->removePowerup();
+				if (powerup != nullptr) {
+					powerup->destroyObjectFromWorld(true);
+					powerup->destroyObjectFromDatabase(true);
+				}
+			}
+			weapon->setDamageSlice(slicePercent);
+			weapon->setSliced(true);
+			success = true;
+		}
+	} else if (sliceType == "effectiveness") {
+		ArmorObject* armor = dynamic_cast<ArmorObject*>(tano);
+		if (armor != nullptr) {
+			armor->setEffectivenessSlice(slicePercent);
+			armor->setSliced(true);
+			success = true;
+		}
+	} else if (sliceType == "encumbrance") {
+		ArmorObject* armor = dynamic_cast<ArmorObject*>(tano);
+		if (armor != nullptr) {
+			armor->setEncumbranceSlice(slicePercent);
+			armor->setSliced(true);
+			success = true;
+		}
+	}
+
+	lua_pushboolean(L, success);
+	return 1;
+}
+
+int DirectorManager::applyDot(lua_State* L) {
+	if (checkArgumentCount(L, 2) == 1) {
+		String err = "incorrect number of arguments passed to DirectorManager::applyDot";
+		printTraceError(L, err);
+		ERROR_CODE = INCORRECT_ARGUMENTS;
+		return 0;
+	}
+
+	SceneObject* scene = (SceneObject*)lua_touserdata(L, -2);
+	String dotType = lua_tostring(L, -1);
+
+	if (scene == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	TangibleObject* tano = dynamic_cast<TangibleObject*>(scene);
+	if (tano == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	WeaponObject* weapon = dynamic_cast<WeaponObject*>(tano);
+	if (weapon == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	Locker locker(weapon);
+
+	// DOT types: 1 = Poison, 2 = Disease, 3 = Fire, 4 = Bleed
+	int dotTypeID = 0;
+	if (dotType == "poison") {
+		dotTypeID = 1;
+	} else if (dotType == "disease") {
+		dotTypeID = 2;
+	} else if (dotType == "fire") {
+		dotTypeID = 3;
+	} else if (dotType == "bleed") {
+		dotTypeID = 4;
+	}
+
+	// Generate random DOT values
+	int dotAttribute = System::random(2) * 3; // 0 = Health, 3 = Action, 6 = Mind
+	int dotStrength = System::random(100) + 50; // Damage per tick (50-150)
+	int dotDuration = System::random(30) + 30; // Duration in seconds (30-60)
+	int dotPotency = System::random(100) + 100; // Resistance check (100-200)
+	int dotUses = System::random(500) + 500; // Number of uses (500-1000)
+
+	// Add DOT to weapon
+	weapon->addDotType(dotTypeID);
+	weapon->addDotAttribute(dotAttribute);
+	weapon->addDotStrength(dotStrength);
+	weapon->addDotDuration(dotDuration);
+	weapon->addDotPotency(dotPotency);
+	weapon->addDotUses(dotUses);
+
+	weapon->setSliced(true);
+
+	lua_pushboolean(L, true);
+	return 1;
 }
 
 int DirectorManager::getSceneObject(lua_State* L) {

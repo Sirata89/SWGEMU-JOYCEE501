@@ -184,3 +184,40 @@ void CraftingManagerImplementation::setInitialCraftingValues(TangibleObject* pro
 	SharedLabratory* lab = labs.get(labratory);
 	lab->setInitialCraftingValues(prototype,manufactureSchematic,assemblySuccess);
 }
+
+int CraftingManagerImplementation::calculateFinalJunkValue(CreatureObject* crafter, ManufactureSchematic* manufactureSchematic) {
+	if(manufactureSchematic == nullptr || manufactureSchematic->getDraftSchematic() == nullptr)
+		return 0;
+	
+	int labratory = manufactureSchematic->getLabratory();
+	SharedLabratory* lab = labs.get(labratory);
+	
+	int baseValue = lab->getJunkValue(manufactureSchematic);
+	
+	// Apply small skill modifier based on player's crafting skill (reduced to prevent inflation)
+	float skillMod = 0;
+	String assemblySkill = manufactureSchematic->getDraftSchematic()->getAssemblySkill();
+	skillMod = crafter->getSkillMod(assemblySkill) / 500.0f; // Reduced from 100 to 500
+	
+	// Add general crafting bonus (reduced)
+	skillMod += crafter->getSkillMod("crafting_general") / 500.0f; // Reduced from 100 to 500
+	
+	// Cap skill modifier to prevent excessive prices
+	if (skillMod > 0.5f)
+		skillMod = 0.5f;
+	
+	// Calculate final value with skill modifier
+	int finalValue = baseValue * (1.0f + skillMod);
+	
+	// Add small randomness (10% variance instead of 20%)
+	int variance = finalValue * 0.1f;
+	if (variance > 0) {
+		finalValue += System::random(variance) - (variance / 2);
+	}
+	
+	// Ensure minimum value
+	if (finalValue < 1)
+		finalValue = 1;
+	
+	return finalValue;
+}

@@ -866,6 +866,11 @@ void CraftingSessionImplementation::initialAssembly(int clientCounter) {
 	String serial = craftingManager->generateSerial();
 	prototype->setSerialNumber(serial);
 
+	// Calculate and set junk value for crafted items
+	int junkPrice = craftingManager->calculateFinalJunkValue(crafter, manufactureSchematic);
+	prototype->setJunkDealerNeeded(1); // Generic dealer type
+	prototype->setJunkValue(junkPrice);
+
 	// Update the prototype with new values
 	prototype->updateCraftingValues(craftingValues, true);
 

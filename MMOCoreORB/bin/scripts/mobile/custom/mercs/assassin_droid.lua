@@ -1,7 +1,7 @@
 assassin_droid = Creature:new {
     objectName = "@mob/creature_names:ig_assassin_droid",
     customName = "Assassin Droid",
-    socialGroup = "droid",
+    socialGroup = "mercenary",
     faction = "neutral",
     level = 78,
     chanceHit = 0.78,
@@ -26,7 +26,8 @@ assassin_droid = Creature:new {
     primaryWeapon = "battle_droid_weapons",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlermaster,marksmanmaster)
+    primaryAttacks = merge(brawlermaster,marksmanmaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(assassin_droid, "assassin_droid")

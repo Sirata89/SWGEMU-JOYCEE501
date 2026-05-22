@@ -1,5 +1,18 @@
 slicingDroidConvoHandler = conv_handler:new {}
 
+-- Global SUI callback object
+slicing_droid_sui_callback = {}
+
+-- Debug logging function
+function logDebug(message)
+	local logFile = io.open("log/slicingbot.log", "a")
+	if logFile then
+		logFile:write(os.date("%Y-%m-%d %H:%M:%S") .. " - " .. message .. "\n")
+		logFile:close()
+	end
+	print("SLICING DEBUG: " .. message)
+end
+
 function slicingDroidConvoHandler:getInitialScreen(pPlayer, pNpc, pConvTemplate)
 	local convoTemplate = LuaConversationTemplate(pConvTemplate)
 	return convoTemplate:getScreen("greeting")
@@ -19,8 +32,9 @@ function slicingDroidConvoHandler:runScreenHandlers(pConvTemplate, pPlayer, pNpc
 		return pConvScreen
 	end
 
-	-- Slicing cost (set to 0 for testing)
-	local sliceCost = 0
+	-- Slicing costs
+	local sliceCost = 20000
+	local dotCost = 100000
 
 	if screenID == "trigger_speed" then
 		self:showItemSelectionSUI(pPlayer, pInventory, "speed", sliceCost)
@@ -54,18 +68,36 @@ function slicingDroidConvoHandler:showItemSelectionSUI(pPlayer, pInventory, slic
 		if pItem ~= nil then
 			local tangible = TangibleObject(pItem)
 			
-			-- Check if item is weapon or armor
-			local pWeapon = WeaponObject(pItem)
-			local pArmor = ArmorObject(pItem)
-			local isWeapon = pWeapon ~= nil
-			local isArmor = pArmor ~= nil
+			-- Check if item is weapon or armor by gameObjectType
+			-- Weapon = 0x20000 to 0x2001F (131072-131103), Armor = 0x100 to 0x108 (256-264)
+			-- Components are in 0x40000+ range (262144+)
+			local gameObjectType = SceneObject(pItem):getGameObjectType()
+			local isWeapon = (gameObjectType >= 131072 and gameObjectType <= 131103) -- Weapons only (0x20000-0x2001F)
+			local isArmor = (gameObjectType >= 256 and gameObjectType <= 264) -- All armor types
+			local isComponent = (gameObjectType >= 262144) -- Components (0x40000+)
 			
 			-- For DOT types, only show weapons
 			local isDotType = (sliceType == "poison" or sliceType == "disease" or sliceType == "fire" or sliceType == "bleed")
 			
-			if not tangible:isSliced() and ((isDotType and isWeapon) or (not isDotType and ((isWeapon and (sliceType == "speed" or sliceType == "damage")) or (isArmor and (sliceType == "effectiveness" or sliceType == "encumbrance"))))) then
-				local itemName = SceneObject(pItem):getDisplayedName()
-				table.insert(items, {id = SceneObject(pItem):getObjectID(), name = itemName})
+			-- Skip components
+			if isComponent then
+				logDebug(" Skipping component with type: " .. gameObjectType)
+			end
+			
+			if not tangible:isSliced() and not isComponent then
+				local shouldInclude = false
+				if isDotType then
+					shouldInclude = isWeapon -- Only weapons for DOTs
+				elseif sliceType == "speed" or sliceType == "damage" then
+					shouldInclude = isWeapon
+				elseif sliceType == "effectiveness" or sliceType == "encumbrance" then
+					shouldInclude = isArmor
+				end
+				
+				if shouldInclude then
+					local itemName = SceneObject(pItem):getDisplayedName()
+					table.insert(items, {id = SceneObject(pItem):getObjectID(), name = itemName})
+				end
 			end
 		end
 	end
@@ -76,43 +108,77 @@ function slicingDroidConvoHandler:showItemSelectionSUI(pPlayer, pInventory, slic
 	end
 	
 	-- Create SUI listbox
-	local sui = SuiListBox.new("SlicingDroidConvoHandler", "suiItemSelectionCallback")
+	local sui = SuiListBox.new("slicing_droid_sui_callback", "suiItemSelectionCallback")
 	sui.setTargetNetworkId(SceneObject(pPlayer):getObjectID())
 	sui.setTitle("Select Item to Slice")
 	sui.setPrompt("Select which item you want to slice for " .. sliceType .. ":")
 	
 	for i, item in ipairs(items) do
-		sui.add(item.name, tostring(item.id))
+		sui.add(item.name, "")
 	end
 	
 	sui.sendTo(pPlayer)
 	
-	-- Store slice type in player data for callback
-	writeData(SceneObject(pPlayer):getObjectID() .. ":slicing_type", sliceType)
+	-- Store items table in player data for callback
+	local itemsTable = {}
+	for i, item in ipairs(items) do
+		itemsTable[i] = item.id
+	end
+	writeStringData(SceneObject(pPlayer):getObjectID() .. ":slicing_items", table.concat(itemsTable, ","))
+	
+	-- Store slice type in player data for callback (use writeStringData for string values)
+	writeStringData(SceneObject(pPlayer):getObjectID() .. ":slicing_type", sliceType)
 	writeData(SceneObject(pPlayer):getObjectID() .. ":slicing_cost", cost)
 end
 
-function slicingDroidConvoHandler:suiItemSelectionCallback(pPlayer, pSui, eventIndex, arg0)
+-- Global SUI callback function
+function slicing_droid_sui_callback:suiItemSelectionCallback(pPlayer, pSui, eventIndex, arg0)
 	local playerID = SceneObject(pPlayer):getObjectID()
+	local player = CreatureObject(pPlayer)
+	
+	logDebug(" suiItemSelectionCallback called, eventIndex: " .. eventIndex .. ", arg0: " .. arg0)
 	
 	if eventIndex == 1 then -- Cancel button
 		deleteData(playerID .. ":slicing_type")
 		deleteData(playerID .. ":slicing_cost")
+		deleteStringData(playerID .. ":slicing_items")
 		return
 	end
 	
-	local itemID = tonumber(arg0)
-	local sliceType = readData(playerID .. ":slicing_type")
+	local selectedIndex = tonumber(arg0)
+	local itemsString = readStringData(playerID .. ":slicing_items")
+	local sliceType = readStringData(playerID .. ":slicing_type")
 	local cost = readData(playerID .. ":slicing_cost")
 	
-	deleteData(playerID .. ":slicing_type")
+	logDebug(" selectedIndex: " .. selectedIndex .. ", sliceType: " .. sliceType)
+	
+	deleteStringData(playerID .. ":slicing_items")
+	deleteStringData(playerID .. ":slicing_type")
 	deleteData(playerID .. ":slicing_cost")
 	
-	if itemID == nil or sliceType == nil then
+	if selectedIndex == nil or itemsString == nil or sliceType == nil then
+		logDebug(" selectedIndex, itemsString, or sliceType is nil")
 		return
 	end
 	
-	self:performSliceOnItem(pPlayer, itemID, sliceType, cost)
+	-- Parse items table and get the selected item ID
+	local itemsTable = {}
+	for id in string.gmatch(itemsString, "[^,]+") do
+		table.insert(itemsTable, tonumber(id))
+	end
+	
+	local itemID = itemsTable[selectedIndex + 1] -- Lua arrays are 1-indexed, SUI is 0-indexed
+	
+	if itemID == nil then
+		logDebug(" itemID is nil from index " .. selectedIndex)
+		return
+	end
+	
+	logDebug(" Retrieved itemID: " .. itemID)
+	
+	-- Call the handler method
+	local handler = slicingDroidConvoHandler
+	handler:performSliceOnItem(pPlayer, itemID, sliceType, cost)
 end
 
 function slicingDroidConvoHandler:performSliceOnItem(pPlayer, itemID, sliceType, cost)
@@ -134,11 +200,18 @@ function slicingDroidConvoHandler:performSliceOnItem(pPlayer, itemID, sliceType,
 	local pItem = nil
 	local inventorySize = SceneObject(pInventory):getContainerObjectsSize()
 	
+	logDebug(" Searching for itemID: " .. itemID .. " in inventory with " .. inventorySize .. " items")
+	
 	for i = 0, inventorySize - 1 do
 		local pInvItem = SceneObject(pInventory):getContainerObject(i)
-		if pInvItem ~= nil and SceneObject(pInvItem):getObjectID() == itemID then
-			pItem = pInvItem
-			break
+		if pInvItem ~= nil then
+			local invItemID = SceneObject(pInvItem):getObjectID()
+			logDebug(" Inventory item " .. i .. " has ID: " .. invItemID)
+			if invItemID == itemID then
+				pItem = pInvItem
+				logDebug(" Found item!")
+				break
+			end
 		end
 	end
 	
@@ -152,24 +225,25 @@ function slicingDroidConvoHandler:performSliceOnItem(pPlayer, itemID, sliceType,
 	if tangible:isSliced() then
 		player:sendSystemMessage("This item has already been sliced.")
 		return
-	endpItem == nil
-	
-	-- Check if item is a weapon for DOT types
-	local isDotType = (sliceType == "poison" or sliceType == "disease" or sliceType == "fire" or sliceType == "bleed")
-	if isDotType and not tangible:isWeaponObject() then
-		player:sendSystemMessage("DOTs can only be applied to weapons.")
-		return
 	end
 	
 	-- Deduct credits
 	player:subtractCashCredits(cost)
 	
+	-- DEBUG: Show item type
+	local gameObjectType = SceneObject(pItem):getGameObjectType()
+	logDebug(" Item type: " .. gameObjectType .. ", Slice type: " .. sliceType)
+	
 	-- Apply slice or DOT
 	local success = false
-	if isDotType then
+	if sliceType == "poison" or sliceType == "disease" or sliceType == "fire" or sliceType == "bleed" then
+		logDebug(" Calling applyDot")
 		success = self:applyDot(pItem, sliceType)
+		logDebug(" applyDot returned: " .. tostring(success))
 	else
+		logDebug(" Calling applySlice")
 		success = self:applySlice(pItem, sliceType)
+		logDebug(" applySlice returned: " .. tostring(success))
 	end
 	
 	if success then
@@ -181,86 +255,13 @@ function slicingDroidConvoHandler:performSliceOnItem(pPlayer, itemID, sliceType,
 end
 
 function slicingDroidConvoHandler:applySlice(pItem, sliceType)
-	local tangible = TangibleObject(pItem)
-	
-	-- Generate random slice percentage between 20-35% (master smuggler quality)
-	local slicePercent = getRandomNumber(20, 35) / 100.0
-
-	if sliceType == "speed" then
-		local weapon = WeaponObject(pItem)
-		if weapon ~= nil then
-			weapon:setSpeedSlice(slicePercent)
-			weapon:setSliced(true)
-			return true
-		end
-	elseif sliceType == "damage" then
-		local weapon = WeaponObject(pItem)
-		if weapon ~= nil then
-			-- Remove powerup if present
-			if weapon:hasPowerup() then
-				local pPowerup = weapon:removePowerup()
-				if pPowerup ~= nil then
-					SceneObject(pPowerup):destroyObjectFromWorld(true)
-					SceneObject(pPowerup):destroyObjectFromDatabase(true)
-				end
-			end
-			weapon:setDamageSlice(slicePercent)
-			weapon:setSliced(true)
-			return true
-		end
-	elseif sliceType == "effectiveness" then
-		local armor = ArmorObject(pItem)
-		if armor ~= nil then
-			armor:setEffectivenessSlice(slicePercent)
-			armor:setSliced(true)
-			return true
-		end
-	elseif sliceType == "encumbrance" then
-		local armor = ArmorObject(pItem)
-		if armor ~= nil then
-			armor:setEncumbranceSlice(slicePercent)
-			armor:setSliced(true)
-			return true
-		end
-	end
-
-	return false
+	-- Call native C++ function to apply slice
+	local success = applySlice(pItem, sliceType)
+	return success
 end
 
 function slicingDroidConvoHandler:applyDot(pItem, dotType)
-	local weapon = WeaponObject(pItem)
-	if weapon == nil then
-		return false
-	end
-	
-	-- DOT types: 1 = Poison, 2 = Disease, 3 = Fire, 4 = Bleed
-	local dotTypeID = 0
-	if dotType == "poison" then
-		dotTypeID = 1
-	elseif dotType == "disease" then
-		dotTypeID = 2
-	elseif dotType == "fire" then
-		dotTypeID = 3
-	elseif dotType == "bleed" then
-		dotTypeID = 4
-	end
-	
-	-- Generate random DOT values
-	-- Attribute: 0 = Health, 3 = Action, 6 = Mind
-	local dotAttribute = getRandomNumber(0, 2) * 3
-	local dotStrength = getRandomNumber(50, 150) -- Damage per tick
-	local dotDuration = getRandomNumber(30, 60) -- Duration in seconds
-	local dotPotency = getRandomNumber(100, 200) -- Resistance check
-	local dotUses = getRandomNumber(500, 1000) -- Number of uses
-	
-	-- Add DOT to weapon
-	weapon:addDotType(dotTypeID)
-	weapon:addDotAttribute(dotAttribute)
-	weapon:addDotStrength(dotStrength)
-	weapon:addDotDuration(dotDuration)
-	weapon:addDotPotency(dotPotency)
-	weapon:addDotUses(dotUses)
-	
-	weapon:setSliced(true)
-	return true
+	-- Call native C++ function to apply DOT
+	local success = applyDot(pItem, dotType)
+	return success
 end

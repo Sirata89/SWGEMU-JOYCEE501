@@ -28,7 +28,8 @@ bounty_hunter_merc = Creature:new {
     primaryWeapon = "pirate_weapons_medium",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(bountyhuntermaster,marksmanmaster)
+    primaryAttacks = merge(bountyhuntermaster,marksmanmaster,brawlermaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(bounty_hunter_merc, "bounty_hunter_merc")

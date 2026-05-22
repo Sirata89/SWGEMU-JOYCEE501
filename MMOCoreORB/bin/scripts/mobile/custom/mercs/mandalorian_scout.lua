@@ -27,7 +27,8 @@ mandalorian_scout = Creature:new {
     primaryWeapon = "pirate_weapons_heavy",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(commandomaster,marksmanmaster)
+    primaryAttacks = merge(commandomaster,marksmanmaster,brawlermaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(mandalorian_scout, "mandalorian_scout")

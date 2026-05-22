@@ -30,6 +30,7 @@ public:
 	virtual float getWeightedValue(ManufactureSchematic* manufactureSchematic, int type);
 	virtual int getCreationCount(ManufactureSchematic* manufactureSchematic) = 0;
 	virtual int calculateAssemblySuccess(CreatureObject* player,DraftSchematic* draftSchematic, float effectiveness);
+	virtual int getJunkValue(ManufactureSchematic* manufactureSchematic);
 protected:
 	ManagedReference<ZoneServer*> zoneServer;
 	float calculateExperimentationValueModifier(int experimentationResult, int pointsAttempted);

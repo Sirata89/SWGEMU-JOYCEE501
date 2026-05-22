@@ -86,4 +86,5 @@ class CraftingManager extends ZoneManager {
 	
 	public native void setInitialCraftingValues(TangibleObject prototype, ManufactureSchematic manufactureSchematic, int assemblySuccess);
 	public native int getCreationCount(ManufactureSchematic manufactureSchematic);
+	public native int calculateFinalJunkValue(CreatureObject crafter, ManufactureSchematic manufactureSchematic);
 }

@@ -28,7 +28,8 @@ rogue_smuggler = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlernovice,marksmanmid)
+    primaryAttacks = merge(brawlermaster,marksmanmaster,pistoleermaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(rogue_smuggler, "rogue_smuggler")

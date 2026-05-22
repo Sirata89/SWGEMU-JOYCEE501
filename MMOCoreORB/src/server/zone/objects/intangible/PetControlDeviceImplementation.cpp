@@ -100,6 +100,11 @@ void PetControlDeviceImplementation::callObject(CreatureObject* player, bool ini
 		return;
 	}
 
+	// Recreate weapons for mercenaries/faction pets when called if they don't exist
+	if (pet->getPrimaryWeapon() == nullptr && pet->getCreatureTemplate() != nullptr) {
+		pet->createWeaponsFromTemplate();
+	}
+
 	// This should never trigger, pet vitality should never drop below 1
 	if (vitality <= 0) {
 		player->sendSystemMessage("@pet/pet_menu:dead_pet"); // This pet is dead. Select DESTROY from the radial menu to delete this pet control device.

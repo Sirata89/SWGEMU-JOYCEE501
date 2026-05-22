@@ -1,7 +1,7 @@
 corporate_security = Creature:new {
     objectName = "@mob/creature_names:corsec_agent",
     customName = "Corporate Security",
-    socialGroup = "corsec",
+    socialGroup = "mercenary",
     faction = "neutral",
     level = 60,
     chanceHit = 0.65,
@@ -28,7 +28,8 @@ corporate_security = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlermid,marksmanmid)
+    primaryAttacks = merge(brawlermaster,marksmanmaster,carbineermaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(corporate_security, "corporate_security")

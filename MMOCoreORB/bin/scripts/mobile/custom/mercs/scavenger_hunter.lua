@@ -28,7 +28,8 @@ scavenger_hunter = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(marksmannovice,brawlernovice)
+    primaryAttacks = merge(brawlermid,marksmanmid),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(scavenger_hunter, "scavenger_hunter")

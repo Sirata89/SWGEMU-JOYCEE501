@@ -28,7 +28,8 @@ rebel_veteran = Creature:new {
     primaryWeapon = "rebel_weapons_medium",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlermid,marksmanmid)
+    primaryAttacks = merge(brawlermaster,marksmanmaster,riflemanmaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(rebel_veteran, "rebel_veteran")

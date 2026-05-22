@@ -28,7 +28,8 @@ elite_commando = Creature:new {
     primaryWeapon = "pirate_weapons_heavy",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(commandomaster,marksmanmaster)
+    primaryAttacks = merge(commandomaster,marksmanmaster,brawlermaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(elite_commando, "elite_commando")

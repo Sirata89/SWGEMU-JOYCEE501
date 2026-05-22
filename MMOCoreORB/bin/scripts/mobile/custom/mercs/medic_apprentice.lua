@@ -26,7 +26,8 @@ merc_medic_apprentice = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(marksmannovice,medicnovice)
+    primaryAttacks = merge(brawlermid,marksmanmid,medicmid),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(merc_medic_apprentice, "merc_medic_apprentice")

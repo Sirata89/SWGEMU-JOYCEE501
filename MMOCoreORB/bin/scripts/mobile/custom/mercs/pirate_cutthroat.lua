@@ -1,7 +1,7 @@
-merc_pirate_cutthroat = Creature:new {
+merc_pirate_hunter = Creature:new {
     objectName = "@mob/creature_names:pirate",
     customName = "Pirate Cutthroat",
-    socialGroup = "pirate",
+    socialGroup = "mercenary",
     faction = "neutral",
     level = 55,
     chanceHit = 0.60,
@@ -28,7 +28,8 @@ merc_pirate_cutthroat = Creature:new {
     primaryWeapon = "pirate_weapons_light",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlermid,marksmanmid)
+    primaryAttacks = merge(brawlermaster,marksmanmaster,pistoleermaster),
+    secondaryAttacks = { }
 }
 
-CreatureTemplates:addCreatureTemplate(merc_pirate_cutthroat, "merc_pirate_cutthroat")
+CreatureTemplates:addCreatureTemplate(merc_pirate_hunter, "merc_pirate_hunter")

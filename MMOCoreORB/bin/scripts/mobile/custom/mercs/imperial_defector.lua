@@ -27,7 +27,8 @@ merc_imperial_defector = Creature:new {
     primaryWeapon = "stormtrooper_weapons",
     secondaryWeapon = "unarmed",
     conversationTemplate = "",
-    attacks = merge(brawlermid,marksmanmid)
+    primaryAttacks = merge(brawlermaster,marksmanmaster,riflemanmaster),
+    secondaryAttacks = { }
 }
 
 CreatureTemplates:addCreatureTemplate(merc_imperial_defector, "merc_imperial_defector")
