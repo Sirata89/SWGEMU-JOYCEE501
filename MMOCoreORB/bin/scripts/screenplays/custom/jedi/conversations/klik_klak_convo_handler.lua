@@ -35,7 +35,7 @@ function klikKlakConvoHandler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, se
   if (screenID == "klik_klak_offer_two") then
     local playerCredits = CreatureObject(pPlayer):getCashCredits()
 
-    if (playerCredits > 9999999) then
+    if (playerCredits > 999999) then
       clonedConversation:addOption("Ok, here you go Klik Klak", "success_paid")
     else
       clonedConversation:addOption("Ok, here you go Klik Klak", "failed_payment")
@@ -46,7 +46,7 @@ function klikKlakConvoHandler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, se
       createObserver(KILLEDCREATURE, "CustomGlowingScreenPlay", "notifyKilledCreatureTrialOnePieceOne", pPlayer)
     end
   elseif (screenID == "success_paid") then
-    CreatureObject(pPlayer):subtractCashCredits(10000000)
+    CreatureObject(pPlayer):subtractCashCredits(1000000)
     CreatureObject(pPlayer):setScreenPlayState(1, "piece_of_eight_one")
     logToFile(CreatureObject(pPlayer):getFirstName() .. " received piece_of_eight_one", "log/custom_glowing/" .. CreatureObject(pPlayer):getFirstName() .. ".log")
     CreatureObject(pPlayer):setScreenPlayState(4, "tusken_queen_head")

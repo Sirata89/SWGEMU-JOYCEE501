@@ -10,6 +10,7 @@ rogue_corsec_tier_1 = {
 		{groupTemplate = "tailor_components", weight = 1100000},
 		{groupTemplate = "wearables_common", weight = 1500000},
 		{groupTemplate = "junk_version_two", weight = 1000000},
+		{groupTemplate = "solo_unique_items_tier1", weight = 1200000},
 	}
 }
 

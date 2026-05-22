@@ -13,6 +13,7 @@ ArenaInvite = ScreenPlay:new {
 			"281474994006800", -- Acko   -- Admin
 			"281474993547517", -- Stan   -- Admin
 			"281474993911974", -- Pork   -- Lore
+			"281474994015801", -- Neeka
 		}
 }
 function ArenaInvite:isEligible(pPlayer)

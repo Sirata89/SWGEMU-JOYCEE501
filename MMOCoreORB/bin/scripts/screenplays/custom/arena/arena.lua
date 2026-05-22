@@ -1,7 +1,7 @@
 Arena = ScreenPlay:new
 {
 	numberOfActs = 1,
-  AdminPlayerID = 281474993547517,
+  AdminPlayerID = 281474993704840,
 	screenplayName = "Arena",
   playerCooldown = 4 * 60 * 60, -- 4 hours
   -- playerCooldown = 10 * 60, -- 10 minutes

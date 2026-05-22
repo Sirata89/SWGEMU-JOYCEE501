@@ -14,6 +14,7 @@ nym_tier_1 = {
 		{groupTemplate = "junk_version_two", weight = 1000000},
 		{groupTemplate = "crafting_component", weight = 250000},
 		{groupTemplate = "component_enhancement", weight = 250000},
+		{groupTemplate = "solo_unique_items_tier1", weight = 1200000},
 	}
 }
 

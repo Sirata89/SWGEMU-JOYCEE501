@@ -17,6 +17,7 @@ nightsister_tier_3 = {
 		{groupTemplate = "junk_version_two", weight = 600000},
 		{groupTemplate = "crafting_component", weight = 175000},
 		{groupTemplate = "crafting_component_advanced", weight = 175000},
+		{groupTemplate = "solo_unique_items_tier3", weight = 1000000},
 	}
 }
 

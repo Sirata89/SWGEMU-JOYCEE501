@@ -826,3 +826,9 @@ includeFile("custom/treasure.lua")
 
 includeFile("custom/hiring_agent.lua")
 includeFile("custom/conversations/hiring_agent_convo_handler.lua")
+includeFile("custom/slicing_droid.lua")
+includeFile("custom/conversations/slicing_droid_convo_handler.lua")
+
+includeFile("custom/merchants/merchant_system.lua")
+includeFile("custom/merchants/armor_jabba_cyan_yaro.lua")
+includeFile("custom/merchants/armor_jabba_nal_yaro.lua")

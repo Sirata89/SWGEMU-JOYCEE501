@@ -46,8 +46,8 @@ levelChance = 5 -- 1 in 5
 --Chance dividend for attribute bonus modifiers
 baseChance = 5 -- 1 in 5
 yellowChance = 20 -- 1 in 20
-exceptionalChance = 500 -- 1 in 500
-legendaryChance = 2500 -- 1 in 2500
+exceptionalChance = 100 -- 1 in 500
+legendaryChance = 500 -- 1 in 2500
 
 --Multiplier values for bonus modifiers
 baseModifier = 1

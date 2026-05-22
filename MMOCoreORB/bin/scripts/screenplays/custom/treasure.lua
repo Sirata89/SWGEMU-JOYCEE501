@@ -1,6 +1,6 @@
 TreasureScreenPlay = ScreenPlay:new {
   numberOfActs = 1,
-  AdminPlayerID = 281474993547517, 
+  AdminPlayerID = 281474993704840, 
   screenplayName = "TreasureScreenPlay",
   spawnPoints = {
     -- planet, x, z, y, heading, cellid

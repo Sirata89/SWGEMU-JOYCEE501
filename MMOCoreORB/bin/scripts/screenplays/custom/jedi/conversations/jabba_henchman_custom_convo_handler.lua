@@ -40,9 +40,9 @@ function jabbaHenchmanCustomConvoHandler:runScreenHandlers(pConvTemplate, pPlaye
   if (screenID == "first_screen") then
     local jabbaStanding = ghost:getFactionStanding("jabba")
 
-    if (jabbaStanding > 4500) then
+    if (jabbaStanding > 2500) then
       clonedConversation:addOption("Jabba and I are close. He'll want me to have it.", "free")
-    elseif (jabbaStanding > 2500) then
+    elseif (jabbaStanding > 1500) then
       clonedConversation:addOption("Jabba and I are close. He'll want me to have it.", "pay")
     else
       clonedConversation:addOption("I need it, no matter the cost", "kill")

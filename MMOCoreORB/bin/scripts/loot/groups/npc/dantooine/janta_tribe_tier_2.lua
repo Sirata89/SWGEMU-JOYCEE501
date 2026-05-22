@@ -7,7 +7,8 @@ janta_tribe_tier_2 = {
 	lootItems = {
 		{groupTemplate = "janta_common", weight = 5200000},
 		{groupTemplate = "junk", weight = 2100000},
-		{groupTemplate = "loot_kit_parts", weight = 2700000},
+		{groupTemplate = "loot_kit_parts", weight = 1700000},
+		{groupTemplate = "solo_unique_items_tier2", weight = 1000000},
 	}
 }
 

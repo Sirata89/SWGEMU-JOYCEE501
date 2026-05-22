@@ -74,8 +74,8 @@ level3 = {
 		-- "bh_death_watch_black_sun_guard", -- level 230
 		"bh_death_watch_black_sun_henchman", -- level 240
 		-- "bh_death_watch_black_sun_thug", -- level 250
-		-- "bh_light_jedi_padawan", -- level 260
-		-- "bh_dark_jedi_padawan", -- level 270
+		"bh_light_jedi_padawan", -- level 260
+		"bh_dark_jedi_padawan", -- level 270
 		"bh_light_jedi_knight", -- level 280
 		"bh_dark_jedi_knight", -- level 290
 		"bh_nightsister_elder", -- level 300

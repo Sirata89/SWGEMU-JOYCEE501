@@ -109,7 +109,7 @@ function GoToTheater:taskStart(pPlayer)
 
 	self:log(self.taskName .. " spawned at: " .. zoneName .. " @ coords x = " .. spawnPoint[1] .. ", y = " .. spawnPoint[3])
 	if (self.taskName == "MeatlumpKingTheatre") then
-		local pAdminPlayer = getCreatureObject(281474993547517)
+		local pAdminPlayer = getCreatureObject(281474993704840)
 		writeScreenPlayData(pAdminPlayer, "MeatlumpKingTheatre", "x", spawnPoint[1])
 		writeScreenPlayData(pAdminPlayer, "MeatlumpKingTheatre", "y", spawnPoint[3])
 		writeScreenPlayData(pAdminPlayer, "MeatlumpKingTheatre", "planet", zoneName)
@@ -173,7 +173,7 @@ function GoToTheater:spawnTheaterObjects(pPlayer)
 	local playerID = SceneObject(pPlayer):getObjectID()
 
 	if (self.taskName == "MeatlumpKingTheatre") then
-		local pStan = getCreatureObject(281474993547517)
+		local pStan = getCreatureObject(281474993704840)
 		playerID = SceneObject(pStan):getObjectID()
 	end
 
@@ -348,7 +348,7 @@ function GoToTheater:getTheaterObject(pPlayer)
 	local theaterId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. "theaterID")
 
 	if (self.taskName == "MeatlumpKingTheatre") then
-		local pStan = getCreatureObject(281474993547517)
+		local pStan = getCreatureObject(281474993704840)
 		theaterId = readData(SceneObject(pStan):getObjectID() .. self.taskName .. "theaterID")
 	end
 

@@ -369,4 +369,9 @@ includeFile("conversations/custom/arena_inviter_conv.lua")
 includeFile("conversations/custom/reward_first_conv.lua")
 includeFile("conversations/custom/reward_second_conv.lua")
 includeFile("conversations/custom/reward_third_conv.lua")
+
+includeFile("conversations/custom/merchants/cyan_yaro_conv.lua")
+includeFile("conversations/custom/merchants/nal_yaro_conv.lua")
 includeFile("conversations/custom/hiring_agent_conv.lua")
+includeFile("conversations/custom/slicing_droid_conv.lua")
+

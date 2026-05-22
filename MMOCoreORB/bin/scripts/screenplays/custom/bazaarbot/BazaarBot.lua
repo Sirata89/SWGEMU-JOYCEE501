@@ -11,6 +11,8 @@ includeFile("custom/bazaarbot/table_loot.lua")
 includeFile("custom/bazaarbot/table_vehicles.lua")
 includeFile("custom/bazaarbot/table_droid.lua")
 includeFile("custom/bazaarbot/table_additive.lua")
+-- includeFile("custom/bazaarbot/table_pet.lua")
+-- includeFile("custom/bazaarbot/table_crafteddroid.lua")
 
 BazaarBotScreenPlay = ScreenPlay:new {
 	numberOfActs = 1,
@@ -32,7 +34,8 @@ function BazaarBotScreenPlay:start()
 	self:validateEvent("BazaarBotAddLoot", "addMoreLoot", 10)
 	self:validateEvent("BazaarBotAddDroid", "addMoreDroid", 11)
 	self:validateEvent("BazaarBotAddAdditive", "addMoreAdditive", 12)
-
+	-- self:validateEvent("BazaarBotAddPet", "addMorePet", 13)
+	-- self:validateEvent("BazaarBotAddCraftedDroid", "addMoreCraftedDroid", 14)
 	-- if (hasServerEvent("BazaarBotCleanInventory")) then
 	-- 	rescheduleServerEvent("BazaarBotCleanInventory", 180 * 1000)
 	-- else
@@ -70,6 +73,8 @@ function BazaarBotScreenPlay:startEvents()
 	self:addMoreVehicles()
 	self:addMoreDroid()
 	self:addMoreAdditive()
+	-- self:addMorePet()
+	-- self:addMoreCraftedDroid()
 	self:logFull("BazaarBotScreenPlay: All listing events have now started and will repeat on their own periodically.\n")
 end
 
@@ -205,7 +210,7 @@ end
 
 function BazaarBotScreenPlay:addMoreCraftedItems(configTable, itemTable)
 	self:listCraftedItems(configTable, itemTable)
-	
+
 	local originalNextTime = configTable.freq * 1000;
 	local randomTimer = (getRandomNumber(7200) - 3600) * 1000;
 	local nextTime = originalNextTime + randomTimer;
@@ -214,7 +219,7 @@ function BazaarBotScreenPlay:addMoreCraftedItems(configTable, itemTable)
 		rescheduleServerEvent(configTable.eventName, nextTime)
 	else
 		createServerEvent(nextTime, "BazaarBotScreenPlay", configTable.functionName, configTable.eventName)
-	end 
+	end
 	self:logFull("Scheduled " .. configTable.functionName .. " to run again in " .. tostring(nextTime / 1000) .. " seconds.")
 end
 
@@ -222,10 +227,10 @@ function BazaarBotScreenPlay:listCraftedItems(configTable, itemTable)
     local pVendor = self:chooseBazaarTerminal()
     local pBazaarBot = getCreatureObject(self.AdminPlayerID)
     local listedOK = false
-    
+
     -- Get the listing chance from config, default to 100% if not specified
     local listingChance = configTable.listingChance or 100
-    
+
     for j = 1, #itemTable do
         -- Roll for each item group based on listingChance
         if getRandomNumber(1, 100) <= listingChance then
@@ -237,12 +242,12 @@ function BazaarBotScreenPlay:listCraftedItems(configTable, itemTable)
                         	altTemplate = nil
                     	end
                     local crateQuantity = itemTable[j][3]
-                
+
                     -- Determine item quality
                     local excellent = getRandomNumber(1, 100)
                     local minQuality = configTable.qualityMin
                     local maxQuality = configTable.qualityAvg
-                    
+
                     if (excellent > 95) then
                         minQuality = configTable.qualityMax + 1
                         maxQuality = configTable.qualityMax + 5
@@ -250,34 +255,20 @@ function BazaarBotScreenPlay:listCraftedItems(configTable, itemTable)
                         minQuality = configTable.qualityAvg
                         maxQuality = configTable.qualityMax
                     end
-                
+
                     local quality = getRandomNumber(minQuality, maxQuality)
                     local price = itemTable[j][1] * (((quality/200) + 1) * crateQuantity) * (1 + (quality / 100))
-                  
-										
+
 					local pItem = bazaarBotCreateCraftedItemAndList(pBazaarBot, template, crateQuantity, quality, altTemplate, pVendor, self.itemDescription, price)
 
 					if (pItem == nil) then
 						logToFile("Craft: " .. configTable.functionName .. ":" .. template .. "() Failed", "log/bazaarbot_troubleshoot.log")
 					end
 					self:logListing("Loot: " .. SceneObject(pItem):getObjectName() .. " (quality: " .. tostring(quality) .. ") " .. tostring(price) .. "cr")
-					-- self:checkInventory()
-										
-                    -- local pItem = bazaarBotCreateCraftedItem(pBazaarBot, template, crateQuantity, quality, altTemplate)
-
-                    -- if (pItem ~= nil) then
-										-- 	bazaarBotListItem(pBazaarBot, pItem, pVendor, self.itemDescription, price)
-										-- 	self:logListing("Loot: " .. SceneObject(pItem):getObjectName() .. " (quality: " .. tostring(quality) .. ") " .. tostring(price) .. "cr")
-										-- 	self:checkInventory()
-                    -- else
-										-- 	self:logFull("Craft: " .. configTable.functionName .. ":" .. template .. "() Failed")
-										-- 	self:checkInventory()
-                    -- end
                 end
             end
         end
     end
-    -- self:checkInventory()
 end
 
 function BazaarBotScreenPlay:addMoreLoot() 

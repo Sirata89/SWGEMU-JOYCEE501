@@ -1,33 +1,34 @@
 generic_merc = Creature:new {
-    objectName = "@mob/creature_names:commoner",           -- base name
+    objectName = "@mob/creature_names:commoner",
     customName = "Hired Mercenary",
     socialGroup = "mercenary",
     faction = "neutral",
-    level = 30,                                            -- will be scaled later if you want
-    chanceHit = 0.45,
-    damageMin = 180,
-    damageMax = 320,
-    baseXp = 2800,
-    baseHAM = 2400,
-    baseHAMmax = 3000,
-    armor = 0,
-    resists = {20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20}, -- light resists
-    optionsBitmask = 264,                                  -- 256 (attackable) + 8 (conversation)
-    pvpBitmask = ATTACKABLE,
-    creatureBitmask = NONE,
+    level = 45,
+    chanceHit = 0.52,
+    damageMin = 320,
+    damageMax = 520,
+    baseXp = 4500,
+    baseHAM = 4000,
+    baseHAMmax = 4800,
+    armor = 1,
+    resists = {40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40},
+    optionsBitmask = AIENABLED,
+    pvpBitmask = NONE,
+    creatureBitmask = PACK,
     diet = HERBIVORE,
+    controlDeviceTemplate = "object/intangible/pet/pet_control.iff",
     
-    -- Visuals - change these for different looks
     templates = {
-        "object/mobile/dressed_mercenary_human_male_01.iff",
-        "object/mobile/dressed_mercenary_human_female_01.iff",
-        "object/mobile/dressed_mercenary_human_male_02.iff"
+        "object/mobile/dressed_mercenary_weak_hum_m.iff",
+        "object/mobile/dressed_mercenary_weak_hum_f.iff",
+        "object/mobile/dressed_mercenary_weak_rod_m.iff"
     },
     
     lootGroups = {},
-    weapons = {"ranged_weapons"},                          -- uses generic ranged weapon pool
-    conversationTemplate = "",                             -- empty for companions
-    attacks = {}
+    primaryWeapon = "pirate_weapons_light",
+    secondaryWeapon = "unarmed",
+    conversationTemplate = "",
+    attacks = merge(marksmannovice,brawlernovice)
 }
 
 CreatureTemplates:addCreatureTemplate(generic_merc, "generic_merc")

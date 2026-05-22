@@ -153,7 +153,8 @@ void PetControlDeviceImplementation::callObject(CreatureObject* player, bool ini
 
 	unsigned int petFaction = pet->getFaction();
 
-	if (petFaction != 0) {
+	// Skip faction check for mercenaries (socialGroup = "mercenary")
+	if (pet->getSocialGroup() != "mercenary" && petFaction != 0) {
 		if (player->getFaction() == 0) {
 			StringIdChatParameter message("@faction_perk:prose_be_declared"); // You must be declared to a faction to use %TT.
 			message.setTT(pet->getDisplayedName());
@@ -610,9 +611,9 @@ void PetControlDeviceImplementation::storeObject(CreatureObject* player, bool fo
 		// Cross lock the pet to add the task
 		Locker playerLock(pet, _this.getReferenceUnsafeStaticCast());
 
-		player->sendSystemMessage( "Storing pet in 60 seconds");
+		player->sendSystemMessage( "Storing pet immediately");
 
-		pet->addPendingTask("store_pet", task, 60 * 1000);
+		pet->addPendingTask("store_pet", task, 0);
 	} else {
 		AtomicTime nextExecution;
 

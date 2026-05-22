@@ -13,6 +13,7 @@ skaak_tipper_gang_tier_1 = {
 		{groupTemplate = "junk_version_two", weight = 1000000},
 		{groupTemplate = "melee_weapons_common", weight = 1000000},
 		{groupTemplate = "ranged_weapons_common", weight = 1000000},
+		{groupTemplate = "solo_unique_items_tier1", weight = 800000},
 	}
 }
 

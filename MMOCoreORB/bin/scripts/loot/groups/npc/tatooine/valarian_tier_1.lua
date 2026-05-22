@@ -16,6 +16,7 @@ valarian_tier_1 = {
 		{groupTemplate = "crafting_component", weight = 250000},
 		{groupTemplate = "melee_weapons_common", weight = 1000000},
 		{groupTemplate = "ranged_weapons_common", weight = 1000000},
+		{groupTemplate = "solo_unique_items_tier1", weight = 1200000},
 	}
 }
 
