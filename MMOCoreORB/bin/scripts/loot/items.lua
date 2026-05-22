@@ -2347,7 +2347,7 @@ includeFile("items/custom/han_solo_necklace.lua")
 includeFile("items/custom/chewbacca_necklace.lua")
 includeFile("items/custom/darth_vader_necklace.lua")
 includeFile("items/custom/obi_wan_necklace.lua")
-includeFile("items/custom/techno_union_necklace.lua")
+includeFile("items/custom/koperloot/techno_union_necklace.lua")
 includeFile("items/custom/oola_necklace.lua")
 
 includeFile("items/custom/barc/barc_disk_01.lua")

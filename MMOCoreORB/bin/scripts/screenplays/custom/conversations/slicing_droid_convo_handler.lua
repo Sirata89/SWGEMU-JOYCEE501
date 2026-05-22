@@ -53,8 +53,12 @@ function slicingDroidConvoHandler:showItemSelectionSUI(pPlayer, pInventory, slic
 		local pItem = SceneObject(pInventory):getContainerObject(i)
 		if pItem ~= nil then
 			local tangible = TangibleObject(pItem)
-			local isWeapon = tangible:isWeaponObject()
-			local isArmor = tangible:isArmorObject()
+			
+			-- Check if item is weapon or armor
+			local pWeapon = WeaponObject(pItem)
+			local pArmor = ArmorObject(pItem)
+			local isWeapon = pWeapon ~= nil
+			local isArmor = pArmor ~= nil
 			
 			-- For DOT types, only show weapons
 			local isDotType = (sliceType == "poison" or sliceType == "disease" or sliceType == "fire" or sliceType == "bleed")
@@ -148,7 +152,7 @@ function slicingDroidConvoHandler:performSliceOnItem(pPlayer, itemID, sliceType,
 	if tangible:isSliced() then
 		player:sendSystemMessage("This item has already been sliced.")
 		return
-	end
+	endpItem == nil
 	
 	-- Check if item is a weapon for DOT types
 	local isDotType = (sliceType == "poison" or sliceType == "disease" or sliceType == "fire" or sliceType == "bleed")
@@ -259,29 +263,4 @@ function slicingDroidConvoHandler:applyDot(pItem, dotType)
 	
 	weapon:setSliced(true)
 	return true
-end
-				end
-			end
-			weapon:setDamageSlice(slicePercent)
-			weapon:setSliced(true)
-			return true
-		end
-	elseif sliceType == "effectiveness" then
-		local armor = ArmorObject(pItem)
-		if armor ~= nil then
-			armor:setEffectivenessSlice(slicePercent)
-			armor:setSliced(true)
-			return true
-		end
-	elseif sliceType == "encumbrance" then
-		local armor = ArmorObject(pItem)
-		if armor ~= nil then
-			armor:setEncumbranceSlice(slicePercent)
-			armor:setSliced(true)
-			return true
-		end
-	end
-
-	return false
-end
 end

@@ -796,7 +796,9 @@ includeFile("groups/custom/junk_version_two.lua")
 includeFile("groups/custom/high_level_junk.lua")
 includeFile("groups/custom/collectables.lua")
 -- koperloot sub-folder
-includeFile("groups/custom/koperloot/solo_unique_items.lua")
+includeFile("groups/custom/solo_unique_items_tier1.lua")
+includeFile("groups/custom/solo_unique_items_tier2.lua")
+includeFile("groups/custom/solo_unique_items_tier3.lua")
 
 includeFile("groups/seaRemoval/sea_removal_20.lua")
 includeFile("groups/seaRemoval/sea_removal_40.lua")
