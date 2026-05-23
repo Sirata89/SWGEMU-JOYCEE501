@@ -18,6 +18,7 @@
 #include "server/zone/objects/player/LuaPlayerObject.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/tangible/LuaTangibleObject.h"
+#include "server/zone/objects/tangible/Container.h"
 #include "server/zone/objects/region/LuaCityRegion.h"
 #include "server/zone/packets/cell/UpdateCellPermissionsMessage.h"
 #include "server/zone/managers/structure/tasks/DestroyStructureTask.h"
@@ -451,6 +452,8 @@ void DirectorManager::initializeLuaEngine(Lua* luaEngine) {
 	luaEngine->registerFunction("spatialMoodChat", spatialMoodChat);
 	luaEngine->registerFunction("applySlice", applySlice);
 	luaEngine->registerFunction("applyDot", applyDot);
+	luaEngine->registerFunction("rechargeDot", rechargeDot);
+	luaEngine->registerFunction("sliceContainer", sliceContainer);
 	luaEngine->registerFunction("getRandomNumber", getRandomNumber);
 	luaEngine->registerFunction("getHashCode", getHashCode);
 	luaEngine->registerFunction("forcePeace", forcePeace);
@@ -2684,20 +2687,29 @@ int DirectorManager::applySlice(lua_State* L) {
 		}
 	}
 
-	lua_pushboolean(L, success);
+	if (success) {
+		lua_pushnumber(L, slicePercent * 100); // Return percentage as integer (20-35)
+	} else {
+		lua_pushnumber(L, 0); // Return 0 on failure
+	}
 	return 1;
 }
 
 int DirectorManager::applyDot(lua_State* L) {
-	if (checkArgumentCount(L, 2) == 1) {
+	if (checkArgumentCount(L, 2) == 1 && checkArgumentCount(L, 3) == 1) {
 		String err = "incorrect number of arguments passed to DirectorManager::applyDot";
 		printTraceError(L, err);
 		ERROR_CODE = INCORRECT_ARGUMENTS;
 		return 0;
 	}
 
-	SceneObject* scene = (SceneObject*)lua_touserdata(L, -2);
-	String dotType = lua_tostring(L, -1);
+	SceneObject* scene = (SceneObject*)lua_touserdata(L, -3);
+	String dotType = lua_tostring(L, -2);
+	int customUses = -1;
+	
+	if (lua_gettop(L) >= 3) {
+		customUses = lua_tointeger(L, -1);
+	}
 
 	if (scene == nullptr) {
 		lua_pushboolean(L, false);
@@ -2735,7 +2747,7 @@ int DirectorManager::applyDot(lua_State* L) {
 	int dotStrength = System::random(100) + 50; // Damage per tick (50-150)
 	int dotDuration = System::random(30) + 30; // Duration in seconds (30-60)
 	int dotPotency = System::random(100) + 100; // Resistance check (100-200)
-	int dotUses = System::random(500) + 500; // Number of uses (500-1000)
+	int dotUses = customUses > 0 ? customUses : (System::random(500) + 500); // Use custom if provided, else random (500-1000)
 
 	// Add DOT to weapon
 	weapon->addDotType(dotTypeID);
@@ -2746,6 +2758,101 @@ int DirectorManager::applyDot(lua_State* L) {
 	weapon->addDotUses(dotUses);
 
 	weapon->setSliced(true);
+
+	lua_pushboolean(L, true);
+	return 1;
+}
+
+int DirectorManager::rechargeDot(lua_State* L) {
+	if (checkArgumentCount(L, 2) == 1) {
+		String err = "incorrect number of arguments passed to DirectorManager::rechargeDot";
+		printTraceError(L, err);
+		ERROR_CODE = INCORRECT_ARGUMENTS;
+		return 0;
+	}
+
+	SceneObject* scene = (SceneObject*)lua_touserdata(L, -2);
+	int additionalUses = lua_tointeger(L, -1);
+
+	if (scene == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	TangibleObject* tano = dynamic_cast<TangibleObject*>(scene);
+	if (tano == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	WeaponObject* weapon = dynamic_cast<WeaponObject*>(tano);
+	if (weapon == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	Locker locker(weapon);
+
+	// Check if weapon has a DOT (check first DOT slot)
+	if (weapon->getDotType(0) == 0) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// Add additional uses to first DOT slot
+	int currentUses = weapon->getDotUses(0);
+	weapon->addDotUses(additionalUses);
+
+	lua_pushboolean(L, true);
+	lua_pushnumber(L, currentUses + additionalUses);
+	return 2;
+}
+
+int DirectorManager::sliceContainer(lua_State* L) {
+	if (checkArgumentCount(L, 1) == 1) {
+		String err = "incorrect number of arguments passed to DirectorManager::sliceContainer";
+		printTraceError(L, err);
+		ERROR_CODE = INCORRECT_ARGUMENTS;
+		return 0;
+	}
+
+	SceneObject* scene = (SceneObject*)lua_touserdata(L, -1);
+
+	if (scene == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	TangibleObject* tano = dynamic_cast<TangibleObject*>(scene);
+	if (tano == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	Locker locker(tano);
+
+	// Check if it's a container
+	if (!tano->isContainerObject()) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// Try to cast to Container
+	Container* container = dynamic_cast<Container*>(tano);
+	if (container == nullptr) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// Check if container is locked and sliceable
+	if (!container->isContainerLocked() || !container->isSliceable()) {
+		lua_pushboolean(L, false);
+		return 1;
+	}
+
+	// Unlock the container
+	container->setLockedStatus(false);
+	container->setSliced(true);
 
 	lua_pushboolean(L, true);
 	return 1;

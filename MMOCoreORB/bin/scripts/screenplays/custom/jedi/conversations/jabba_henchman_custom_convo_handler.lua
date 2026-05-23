@@ -12,6 +12,14 @@ function jabbaHenchmanCustomConvoHandler:getInitialScreen(pPlayer, nNpc, pConvTe
   elseif (CreatureObject(pPlayer):hasScreenPlayState(2, "krayt_dragon")) then
     return convoTemplate:getScreen("kill_success")
   elseif (CreatureObject(pPlayer):hasScreenPlayState(1, "krayt_dragon")) then
+    local pGhost = CreatureObject(pPlayer):getPlayerObject()
+    if (pGhost ~= nil) then
+      local ghost = LuaPlayerObject(pGhost)
+      local jabbaStanding = ghost:getFactionStanding("jabba")
+      if (jabbaStanding > 1500) then
+        return convoTemplate:getScreen("first_screen")
+      end
+    end
     return convoTemplate:getScreen("kill_ongoing")
   else
     return convoTemplate:getScreen("first_screen")

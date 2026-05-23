@@ -14,6 +14,8 @@ local greetingScreen = ConvoScreen:new {
         { "I want to slice a weapon", "weapon_menu" },
         { "I want to slice armor", "armor_menu" },
         { "Special: Add DOT to weapon", "special_menu" },
+        { "Recharge DOT uses (50,000 credits)", "trigger_recharge" },
+        { "Slice locked container (20,000 credits)", "trigger_container" },
         { "Tell me about your pricing", "pricing_info" },
         { "No thanks", "goodbye" }
     }
@@ -85,52 +87,191 @@ local specialMenuScreen = ConvoScreen:new {
     customDialogText = "I can add a Damage Over Time (DOT) effect to your weapon. Choose the type of DOT you want.",
     stopConversation = "false",
     options = {
-        { "Add Poison DOT (FREE for testing)", "trigger_poison" },
-        { "Add Disease DOT (FREE for testing)", "trigger_disease" },
-        { "Add Fire DOT (FREE for testing)", "trigger_fire" },
-        { "Add Bleed DOT (FREE for testing)", "trigger_bleed" },
+        { "Poison DOT", "poison_tier_menu" },
+        { "Disease DOT", "disease_tier_menu" },
+        { "Fire DOT", "fire_tier_menu" },
+        { "Bleed DOT", "bleed_tier_menu" },
         { "Back", "greeting" }
     }
 }
 slicingDroidConvoTemplate:addScreen(specialMenuScreen)
 
--- Special trigger screens
-local triggerPoisonScreen = ConvoScreen:new {
-    id = "trigger_poison",
+-- Poison Tier Menu
+local poisonTierMenuScreen = ConvoScreen:new {
+    id = "poison_tier_menu",
+    customDialogText = "Select the tier of Poison DOT you want.",
+    stopConversation = "false",
+    options = {
+        { "Standard (500-1000 uses) - 100,000 credits", "trigger_poison_standard" },
+        { "Premium (2000-2500 uses) - 250,000 credits", "trigger_poison_premium" },
+        { "Elite (4000-4500 uses) - 500,000 credits", "trigger_poison_elite" },
+        { "Back", "special_menu" }
+    }
+}
+slicingDroidConvoTemplate:addScreen(poisonTierMenuScreen)
+
+-- Disease Tier Menu
+local diseaseTierMenuScreen = ConvoScreen:new {
+    id = "disease_tier_menu",
+    customDialogText = "Select the tier of Disease DOT you want.",
+    stopConversation = "false",
+    options = {
+        { "Standard (500-1000 uses) - 100,000 credits", "trigger_disease_standard" },
+        { "Premium (2000-2500 uses) - 250,000 credits", "trigger_disease_premium" },
+        { "Elite (4000-4500 uses) - 500,000 credits", "trigger_disease_elite" },
+        { "Back", "special_menu" }
+    }
+}
+slicingDroidConvoTemplate:addScreen(diseaseTierMenuScreen)
+
+-- Fire Tier Menu
+local fireTierMenuScreen = ConvoScreen:new {
+    id = "fire_tier_menu",
+    customDialogText = "Select the tier of Fire DOT you want.",
+    stopConversation = "false",
+    options = {
+        { "Standard (500-1000 uses) - 100,000 credits", "trigger_fire_standard" },
+        { "Premium (2000-2500 uses) - 250,000 credits", "trigger_fire_premium" },
+        { "Elite (4000-4500 uses) - 500,000 credits", "trigger_fire_elite" },
+        { "Back", "special_menu" }
+    }
+}
+slicingDroidConvoTemplate:addScreen(fireTierMenuScreen)
+
+-- Bleed Tier Menu
+local bleedTierMenuScreen = ConvoScreen:new {
+    id = "bleed_tier_menu",
+    customDialogText = "Select the tier of Bleed DOT you want.",
+    stopConversation = "false",
+    options = {
+        { "Standard (500-1000 uses) - 100,000 credits", "trigger_bleed_standard" },
+        { "Premium (2000-2500 uses) - 250,000 credits", "trigger_bleed_premium" },
+        { "Elite (4000-4500 uses) - 500,000 credits", "trigger_bleed_elite" },
+        { "Back", "special_menu" }
+    }
+}
+slicingDroidConvoTemplate:addScreen(bleedTierMenuScreen)
+
+-- DOT Tier trigger screens
+local triggerPoisonStandardScreen = ConvoScreen:new {
+    id = "trigger_poison_standard",
     customDialogText = "",
     stopConversation = "true",
     options = {}
 }
-slicingDroidConvoTemplate:addScreen(triggerPoisonScreen)
+slicingDroidConvoTemplate:addScreen(triggerPoisonStandardScreen)
 
-local triggerDiseaseScreen = ConvoScreen:new {
-    id = "trigger_disease",
+local triggerPoisonPremiumScreen = ConvoScreen:new {
+    id = "trigger_poison_premium",
     customDialogText = "",
     stopConversation = "true",
     options = {}
 }
-slicingDroidConvoTemplate:addScreen(triggerDiseaseScreen)
+slicingDroidConvoTemplate:addScreen(triggerPoisonPremiumScreen)
 
-local triggerFireScreen = ConvoScreen:new {
-    id = "trigger_fire",
+local triggerPoisonEliteScreen = ConvoScreen:new {
+    id = "trigger_poison_elite",
     customDialogText = "",
     stopConversation = "true",
     options = {}
 }
-slicingDroidConvoTemplate:addScreen(triggerFireScreen)
+slicingDroidConvoTemplate:addScreen(triggerPoisonEliteScreen)
 
-local triggerBleedScreen = ConvoScreen:new {
-    id = "trigger_bleed",
+local triggerDiseaseStandardScreen = ConvoScreen:new {
+    id = "trigger_disease_standard",
     customDialogText = "",
     stopConversation = "true",
     options = {}
 }
-slicingDroidConvoTemplate:addScreen(triggerBleedScreen)
+slicingDroidConvoTemplate:addScreen(triggerDiseaseStandardScreen)
 
+local triggerDiseasePremiumScreen = ConvoScreen:new {
+    id = "trigger_disease_premium",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerDiseasePremiumScreen)
+
+local triggerDiseaseEliteScreen = ConvoScreen:new {
+    id = "trigger_disease_elite",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerDiseaseEliteScreen)
+
+local triggerFireStandardScreen = ConvoScreen:new {
+    id = "trigger_fire_standard",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerFireStandardScreen)
+
+local triggerFirePremiumScreen = ConvoScreen:new {
+    id = "trigger_fire_premium",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerFirePremiumScreen)
+
+local triggerFireEliteScreen = ConvoScreen:new {
+    id = "trigger_fire_elite",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerFireEliteScreen)
+
+local triggerBleedStandardScreen = ConvoScreen:new {
+    id = "trigger_bleed_standard",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerBleedStandardScreen)
+
+local triggerBleedPremiumScreen = ConvoScreen:new {
+    id = "trigger_bleed_premium",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerBleedPremiumScreen)
+
+local triggerBleedEliteScreen = ConvoScreen:new {
+    id = "trigger_bleed_elite",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerBleedEliteScreen)
+
+-- Recharge trigger screen
+local triggerRechargeScreen = ConvoScreen:new {
+    id = "trigger_recharge",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerRechargeScreen)
+
+-- Container trigger screen
+local triggerContainerScreen = ConvoScreen:new {
+    id = "trigger_container",
+    customDialogText = "",
+    stopConversation = "true",
+    options = {}
+}
+slicingDroidConvoTemplate:addScreen(triggerContainerScreen)
+
+-- 
 -- Pricing Info
 local pricingInfoScreen = ConvoScreen:new {
     id = "pricing_info",
-    customDialogText = "All slicing services are currently FREE for testing. Standard slicing: 20-35% enhancement. DOT slicing adds damage over time effects.",
+    customDialogText = "Weapon/Armor slicing: 20,000 credits (20-35% enhancement). DOT slicing: 100,000 credits (adds damage over time effects). Container slicing: 20,000 credits (unlocks locked containers).",
     stopConversation = "false",
     options = {
         { "Back", "greeting" }
