@@ -906,8 +906,8 @@ BBLootItems = {
 	-- Rare 97 - 99
 	-- Price 5000 - 10000
 	{
-	-- "attachment_armor",
-	-- "attachment_clothing",
+	"attachment_armor",
+	"attachment_clothing",
 	"giant_dune_kimogila_scale",
 	"rancor_bile",
 	"rancor_hides",
