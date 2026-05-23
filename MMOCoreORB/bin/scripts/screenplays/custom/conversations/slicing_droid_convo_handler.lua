@@ -88,15 +88,8 @@ end
 -- Helper function to deduct credits from cash or bank seamlessly
 function slicingDroidConvoHandler:deductCredits(pPlayer, cost)
 	local player = CreatureObject(pPlayer)
-	local pGhost = player:getPlayerObject()
-	
-	if pGhost == nil then
-		return false
-	end
-	
-	local ghost = LuaPlayerObject(pGhost)
 	local cashCredits = player:getCashCredits()
-	local bankCredits = ghost:getBankCredits()
+	local bankCredits = player:getBankCredits()
 	local totalCredits = cashCredits + bankCredits
 	
 	if totalCredits < cost then
@@ -110,7 +103,7 @@ function slicingDroidConvoHandler:deductCredits(pPlayer, cost)
 		-- Use all cash, then deduct remaining from bank
 		player:subtractCashCredits(cashCredits)
 		local remaining = cost - cashCredits
-		ghost:subtractBankCredits(remaining)
+		player:subtractBankCredits(remaining)
 	end
 	
 	return true

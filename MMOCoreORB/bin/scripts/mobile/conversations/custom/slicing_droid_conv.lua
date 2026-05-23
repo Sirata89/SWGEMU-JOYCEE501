@@ -28,8 +28,8 @@ local weaponMenuScreen = ConvoScreen:new {
     customDialogText = "I can slice your weapon for either speed or damage. Select which enhancement you prefer.",
     stopConversation = "false",
     options = {
-        { "Slice for speed (FREE)", "trigger_speed" },
-        { "Slice for damage (FREE)", "trigger_damage" },
+        { "Slice for speed (20,000 credits)", "trigger_speed" },
+        { "Slice for damage (20,000 credits)", "trigger_damage" },
         { "Back", "greeting" }
     }
 }
@@ -41,8 +41,8 @@ local armorMenuScreen = ConvoScreen:new {
     customDialogText = "I can slice your armor for either effectiveness or encumbrance reduction. Select which enhancement you prefer.",
     stopConversation = "false",
     options = {
-        { "Slice for effectiveness (FREE)", "trigger_effectiveness" },
-        { "Slice for encumbrance (FREE)", "trigger_encumbrance" },
+        { "Slice for effectiveness (20,000 credits)", "trigger_effectiveness" },
+        { "Slice for encumbrance (20,000 credits)", "trigger_encumbrance" },
         { "Back", "greeting" }
     }
 }
